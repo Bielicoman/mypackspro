@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia — My Packs Pro</title>
+<meta name="description" content="Como usar o My Packs Pro: adicionar packs, levar assets para a timeline, organizar por pasta e rótulo de cor, e resolver problemas.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="doc">
+
+<a class="skip" href="#conteudo">Ir para o conteúdo</a>
+
+<header class="nav">
+  <a class="brand" href="index.html" aria-label="My Packs Pro">
+    <svg class="brand__mark" viewBox="0 0 96 96" aria-hidden="true">
+      <rect x="18" y="20" width="60" height="16" rx="4" class="m-3"/>
+      <rect x="18" y="20" width="5"  height="16" rx="2.5" class="m-l1"/>
+      <rect x="14" y="40" width="68" height="16" rx="4" class="m-2"/>
+      <rect x="14" y="40" width="5"  height="16" rx="2.5" class="m-l2"/>
+      <rect x="10" y="60" width="76" height="16" rx="4" class="m-1"/>
+      <rect x="10" y="60" width="5"  height="16" rx="2.5" class="m-acc"/>
+    </svg>
+    <span class="brand__name">My&nbsp;Packs&nbsp;Pro</span>
+  </a>
+  <nav class="nav__links">
+    <a href="index.html">Início</a>
+    <a class="btn btn--ghost" href="https://github.com/Bielicoman/mypackspro">GitHub</a>
+    <a class="btn btn--solid" href="index.html#baixar">Baixar</a>
+  </nav>
+</header>
+
+<div class="doc__wrap" id="conteudo">
+
+  <!-- ─────────── índice lateral ─────────── -->
+  <aside class="toc">
+    <p class="toc__title">Neste guia</p>
+    <nav>
+      <a href="#instalar">Instalar</a>
+      <a href="#painel">Conhecer o painel</a>
+      <a href="#pack">Adicionar um pack</a>
+      <a href="#timeline">Levar para a timeline</a>
+      <a href="#organizar">Organização automática</a>
+      <a href="#rotulos">Rótulos de cor</a>
+      <a href="#copia">Cópia para o projeto</a>
+      <a href="#problemas">Se algo não funcionar</a>
+    </nav>
+  </aside>
+
+  <main class="doc__body">
+
+    <header class="doc__head">
+      <p class="eyebrow">Guia</p>
+      <h1>Como usar o My&nbsp;Packs&nbsp;Pro</h1>
+      <p class="lede">
+        Do primeiro pack até a organização automática por pasta e cor. Leva uns
+        dez minutos para configurar uma vez — depois é só editar.
+      </p>
+    </header>
+
+    <!-- ═══════════ INSTALAR ═══════════ -->
+    <section id="instalar">
+      <h2>Instalar</h2>
+      <ol class="olist">
+        <li><b>Feche o Premiere Pro.</b> Extensões só são lidas quando ele abre.</li>
+        <li>
+          Baixe o instalador e abra o <code>MyPacksPro.zxp</code>. Ele abre no
+          <a href="https://aescripts.com/learn/zxp-installer/">ZXP Installer</a>, que é gratuito.
+          <br><span class="muted">Não tem o instalador? Use o <code>Instalar.bat</code> que vem no pacote — ele não precisa de nada além do Windows.</span>
+        </li>
+        <li>Abra o Premiere e vá em <b>Janela → Extensões → My Packs Pro</b>.</li>
+      </ol>
+      <p class="callout">
+        <b>O FFmpeg já vem incluído.</b> Ele é o que gera os previews de vídeo e
+        imagem. Você não precisa instalar nada além do plugin.
+      </p>
+    </section>
+
+    <!-- ═══════════ PAINEL ═══════════ -->
+    <section id="painel">
+      <h2>Conhecer o painel</h2>
+      <p>Cinco regiões, e cada uma faz uma coisa só.</p>
+
+      <figure class="fig">
+        <svg viewBox="0 0 640 380" role="img" aria-label="Diagrama das regiões do painel">
+          <rect x="1" y="1" width="638" height="378" rx="8" fill="#232323" stroke="#0D0F13"/>
+
+          <!-- abas -->
+          <rect x="1" y="1" width="638" height="34" rx="8" fill="#1E1E1E"/>
+          <rect x="14" y="9" width="86" height="18" rx="3" fill="#3C3C3C"/>
+          <rect x="106" y="9" width="104" height="18" rx="3" fill="#2A2A2A"/>
+          <text x="612" y="23" class="d-acc d-num">+</text>
+          <circle cx="330" cy="18" r="11" class="d-badge"/>
+          <text x="330" y="23" class="d-num">1</text>
+
+          <!-- lateral -->
+          <rect x="1" y="35" width="150" height="310" fill="#262626"/>
+          <rect x="12" y="46" width="128" height="18" rx="3" fill="#1C1C1C" stroke="#3A3A3A"/>
+          <g fill="#4A4A4A">
+            <rect x="12" y="74"  width="110" height="8" rx="4"/>
+            <rect x="12" y="92"  width="92"  height="8" rx="4"/>
+            <rect x="12" y="110" width="102" height="8" rx="4"/>
+            <rect x="12" y="128" width="84"  height="8" rx="4"/>
+          </g>
+          <circle cx="76" cy="180" r="11" class="d-badge"/>
+          <text x="76" y="185" class="d-num">2</text>
+
+          <!-- grade -->
+          <g>
+            <rect x="166" y="48"  width="102" height="60" rx="4" fill="#2E3644"/>
+            <rect x="280" y="48"  width="102" height="60" rx="4" fill="#3A2E44"/>
+            <rect x="394" y="48"  width="102" height="60" rx="4" fill="#2E4438"/>
+            <rect x="508" y="48"  width="102" height="60" rx="4" fill="#443A2E"/>
+            <rect x="166" y="124" width="102" height="60" rx="4" fill="#2A3040"/>
+            <rect x="280" y="124" width="102" height="60" rx="4" fill="#402A30"/>
+            <rect x="394" y="124" width="102" height="60" rx="4" fill="#30402A"/>
+            <rect x="508" y="124" width="102" height="60" rx="4" fill="#3A3040"/>
+          </g>
+          <circle cx="388" cy="230" r="11" class="d-badge"/>
+          <text x="388" y="235" class="d-num">3</text>
+
+          <!-- barra classificar -->
+          <rect x="500" y="200" width="110" height="16" rx="3" fill="#2E2E2E"/>
+          <circle cx="470" cy="208" r="11" class="d-badge"/>
+          <text x="470" y="213" class="d-num">4</text>
+
+          <!-- rodapé -->
+          <rect x="1" y="345" width="638" height="34" fill="#1E1E1E"/>
+          <rect x="16" y="360" width="70" height="3" rx="1.5" fill="#565656"/>
+          <circle cx="40" cy="361.5" r="5" fill="#C8C8C8"/>
+          <circle cx="104" cy="362" r="6" fill="none" stroke="#9B9B9B" stroke-width="1.6"/>
+          <circle cx="126" cy="362" r="6" fill="none" stroke="#9B9B9B" stroke-width="1.6"/>
+          <circle cx="170" cy="362" r="11" class="d-badge"/>
+          <text x="170" y="367" class="d-num">5</text>
+        </svg>
+      </figure>
+
+      <dl class="legend">
+        <div><dt>1</dt><dd><b>Packs importados.</b> Cada pasta que você adiciona vira uma aba. O <b>+</b> à direita adiciona outra.</dd></div>
+        <div><dt>2</dt><dd><b>Categorias.</b> São as subpastas do pack. Botão direito aqui é onde mora a organização automática.</dd></div>
+        <div><dt>3</dt><dd><b>A grade.</b> Vídeo roda sozinho; áudio toca ao passar o mouse. Botão direito abre <i>Ver no Explorer</i> e <i>Copiar caminho</i>.</dd></div>
+        <div><dt>4</dt><dd><b>Classificar.</b> Filtra por tipo (só vídeos, só áudios…) e ordena por nome, tipo, tamanho ou data.</dd></div>
+        <div><dt>5</dt><dd><b>Rodapé.</b> Tamanho da grade, play/pause das reproduções e as configurações.</dd></div>
+      </dl>
+    </section>
+
+    <!-- ═══════════ PACK ═══════════ -->
+    <section id="pack">
+      <h2>Adicionar um pack</h2>
+      <p>
+        Clique em <b>+</b> no topo e escolha a pasta. O plugin lê tudo e monta a
+        grade — nada é movido nem copiado nesse momento.
+      </p>
+      <p>
+        <b>As subpastas viram categorias.</b> Se o seu pack tem
+        <code>SFX/</code>, <code>VFX/</code> e <code>Trilhas/</code>, é isso que
+        aparece na lista à esquerda. Arquivos soltos na raiz aparecem em
+        <i>Sem categoria</i>.
+      </p>
+      <p class="callout">
+        <b>Botão direito na aba</b> do pack para <i>Recarregar pasta</i> (depois
+        de adicionar arquivos novos) ou <i>Remover pack</i>. Remover não apaga
+        nada do disco — só tira do painel.
+      </p>
+    </section>
+
+    <!-- ═══════════ TIMELINE ═══════════ -->
+    <section id="timeline">
+      <h2>Levar para a timeline</h2>
+      <p>Dois gestos, cada um bom para uma coisa.</p>
+
+      <div class="two">
+        <article class="mini">
+          <h3>Duplo-clique</h3>
+          <p><b>Insere no playhead.</b> Rápido e preciso quando você já posicionou a agulha.</p>
+        </article>
+        <article class="mini">
+          <h3>Arrastar</h3>
+          <p><b>Vai para o painel Projeto.</b> De lá você arrasta para a timeline na posição exata que quiser.</p>
+        </article>
+      </div>
+
+      <p class="callout callout--why">
+        <b>Por que arrastar não vai direto para a timeline?</b> É uma limitação do
+        Premiere, não do plugin: a timeline não aceita arquivos largados nela, só
+        o painel Projeto aceita. Nenhuma extensão contorna isso — conferimos em
+        todas as extensões comerciais instaladas para testar.
+      </p>
+
+      <h3>A inserção nunca sobrescreve</h3>
+      <p>
+        O asset entra sempre numa faixa <b>acima</b> do que já existe naquele
+        ponto. Se todas estiverem ocupadas, o plugin cria uma faixa nova — como o
+        Premiere faz quando você arrasta acima da última.
+      </p>
+
+      <figure class="fig fig--sm">
+        <svg viewBox="0 0 560 180" role="img" aria-label="O clipe novo entra acima do material existente">
+          <text x="8" y="26" class="d-lbl">V3</text>
+          <rect x="40" y="14" width="500" height="24" rx="3" fill="#1E2229" stroke="#2A303B" stroke-dasharray="4 3"/>
+          <rect x="232" y="14" width="120" height="24" rx="3" fill="#F5A524"/>
+          <text x="292" y="30" class="d-on-acc">novo</text>
+
+          <text x="8" y="76" class="d-lbl">V2</text>
+          <rect x="40" y="64" width="500" height="24" rx="3" fill="#1E2229" stroke="#2A303B"/>
+          <rect x="150" y="64" width="150" height="24" rx="3" fill="#3A4454"/>
+
+          <text x="8" y="126" class="d-lbl">V1</text>
+          <rect x="40" y="114" width="500" height="24" rx="3" fill="#1E2229" stroke="#2A303B"/>
+          <rect x="60" y="114" width="420" height="24" rx="3" fill="#2E3644"/>
+
+          <line x1="292" y1="6" x2="292" y2="152" stroke="#4A9EFF" stroke-width="2"/>
+          <text x="292" y="168" class="d-lbl d-mid">playhead</text>
+        </svg>
+      </figure>
+    </section>
+
+    <!-- ═══════════ ORGANIZAR ═══════════ -->
+    <section id="organizar">
+      <h2>Organização automática</h2>
+      <p>
+        Aqui está o ganho real de tempo. Você diz uma vez onde cada categoria deve
+        cair no seu projeto, e o plugin passa a arrumar sozinho.
+      </p>
+
+      <ol class="olist">
+        <li>Botão direito numa categoria da lista à esquerda</li>
+        <li>Escolha <b>Definir pasta de destino</b></li>
+        <li>Escreva o nome da pasta, por exemplo <code>03 SFX</code></li>
+      </ol>
+
+      <figure class="fig fig--sm">
+        <svg viewBox="0 0 560 200" role="img" aria-label="Categorias do pack mapeadas para pastas do projeto">
+          <text x="12" y="20" class="d-lbl">SEU PACK</text>
+          <g class="d-box">
+            <rect x="12" y="34" width="180" height="30" rx="4"/>
+            <rect x="12" y="72" width="180" height="30" rx="4"/>
+            <rect x="12" y="110" width="180" height="30" rx="4"/>
+          </g>
+          <text x="28" y="54" class="d-txt">SFX/</text>
+          <text x="28" y="92" class="d-txt">VFX/</text>
+          <text x="28" y="130" class="d-txt">Trilhas/</text>
+
+          <g stroke="#F5A524" stroke-width="1.6" fill="none" marker-end="url(#a)">
+            <path d="M200 49 H352"/>
+            <path d="M200 87 H352"/>
+            <path d="M200 125 H352"/>
+          </g>
+          <defs>
+            <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#F5A524"/>
+            </marker>
+          </defs>
+
+          <text x="360" y="20" class="d-lbl">SEU PROJETO</text>
+          <g class="d-box">
+            <rect x="360" y="34" width="188" height="30" rx="4"/>
+            <rect x="360" y="72" width="188" height="30" rx="4"/>
+            <rect x="360" y="110" width="188" height="30" rx="4"/>
+          </g>
+          <text x="376" y="54" class="d-txt">03 SFX/</text>
+          <text x="376" y="92" class="d-txt">04 VFX/</text>
+          <text x="376" y="130" class="d-txt">05 TRILHAS/</text>
+
+          <text x="280" y="176" class="d-lbl d-mid">a regra é herdada pelas subcategorias</text>
+        </svg>
+      </figure>
+
+      <p class="callout">
+        <b>Use nome relativo, não caminho completo.</b> Escrever <code>03 SFX</code>
+        faz a regra funcionar em <i>todos</i> os seus projetos que seguem a mesma
+        estrutura. Um caminho absoluto como <code>D:\Projetos\Casamento\03 SFX</code>
+        só serve para aquele projeto.
+      </p>
+      <p>
+        A regra é <b>herdada</b>: definir em <code>SFX</code> já vale para
+        <code>SFX/Whoosh</code> e <code>SFX/Impacto</code>. Uma regra mais
+        específica sobrepõe a do pai.
+      </p>
+    </section>
+
+    <!-- ═══════════ RÓTULOS ═══════════ -->
+    <section id="rotulos">
+      <h2>Rótulos de cor</h2>
+      <p>
+        No mesmo menu de botão direito, escolha uma das 16 cores do Premiere. O
+        asset chega ao projeto já com esse rótulo.
+      </p>
+      <div class="chips" aria-hidden="true">
+        <span style="--c:#6f5fc0"></span><span style="--c:#2f5f80"></span>
+        <span style="--c:#2f6b46"></span><span style="--c:#8f7fd0"></span>
+        <span style="--c:#2f7f9f"></span><span style="--c:#3f6b2f"></span>
+        <span style="--c:#b0405f"></span><span style="--c:#b06a20"></span>
+        <span style="--c:#8f3fbf"></span><span style="--c:#2f5fcf"></span>
+        <span style="--c:#1f6f7f"></span><span style="--c:#a02f7f"></span>
+        <span style="--c:#9f7f5f"></span><span style="--c:#4f9f4f"></span>
+        <span style="--c:#7f5f3f"></span><span style="--c:#b0b040"></span>
+      </div>
+      <p class="callout callout--why">
+        <b>A cor no painel pode não bater com a do seu Premiere.</b> Rótulos são
+        <i>nomes</i> — "Violeta", "Íris" — e a cor de cada nome vem das suas
+        Preferências. Se você trocou o esquema para Clássico, os nomes continuam
+        certos mas as cores mudam. Por isso o seletor mostra o nome embaixo das
+        amostras: é ele que vale.
+      </p>
+    </section>
+
+    <!-- ═══════════ CÓPIA ═══════════ -->
+    <section id="copia">
+      <h2>Cópia para o projeto</h2>
+      <p>
+        Ligada por padrão. Ao importar, o arquivo é copiado para junto do
+        <code>.prproj</code> e é a <b>cópia</b> que entra na edição.
+      </p>
+      <p>
+        Isso resolve o problema clássico de quem edita com pack em disco externo
+        ou drive sincronizada: sem a cópia, desligar o disco transforma tudo em
+        mídia offline.
+      </p>
+      <p class="callout">
+        <b>Salve o projeto antes.</b> Sem um <code>.prproj</code> gravado não
+        existe pasta de projeto, e o plugin avisa em vez de copiar para um lugar
+        arbitrário. Se preferir uma pasta fixa, defina nas configurações.
+      </p>
+    </section>
+
+    <!-- ═══════════ PROBLEMAS ═══════════ -->
+    <section id="problemas">
+      <h2>Se algo não funcionar</h2>
+
+      <div class="qa">
+        <h3>Um asset não tem preview</h3>
+        <p>
+          <b>Passe o mouse na célula.</b> A dica mostra o motivo exato da falha.
+          Arquivos muito grandes em drive sincronizada podem demorar — um ProRes
+          4K de 200 MB leva quase um minuto só para ser lido.
+        </p>
+      </div>
+
+      <div class="qa">
+        <h3>O painel abriu preto</h3>
+        <p>
+          Se aparecer uma mensagem de erro com dois botões, use
+          <b>Repor configurações e recarregar</b>. Isso limpa preferências antigas
+          e costuma resolver.
+        </p>
+      </div>
+
+      <div class="qa">
+        <h3>Duplo-clique não insere nada</h3>
+        <p>
+          Confira se há uma <b>sequência aberta</b> na timeline. Sem sequência
+          ativa não existe onde inserir, e o plugin avisa no rodapé.
+        </p>
+      </div>
+
+      <div class="qa">
+        <h3>Um tipo de arquivo não aparece na grade</h3>
+        <p>
+          O painel esconde o que o Premiere não importa — PDF, fontes, presets
+          <code>.ffx</code>, LUTs. É intencional: a grade só mostra o que você
+          consegue usar na edição.
+        </p>
+      </div>
+
+      <p class="callout">
+        Achou um problema que não está aqui?
+        <a href="https://github.com/Bielicoman/mypackspro/issues">Abra uma issue no GitHub</a> —
+        se puder, com o print da dica da célula ou da mensagem de erro.
+      </p>
+    </section>
+
+  </main>
+</div>
+
+<footer class="foot">
+  <div class="foot__in">
+    <span>My Packs Pro — feito por Alex Ascencio</span>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="https://github.com/Bielicoman/mypackspro">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

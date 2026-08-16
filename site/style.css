@@ -387,3 +387,105 @@ h1, h2, h3, h4 { margin: 0; text-wrap: balance; letter-spacing: -0.022em; }
   .reveal { opacity: 1; transform: none; }
   .reveal.is-in { transition: none; }
 }
+
+/* ═══════════════════════ guia ═══════════════════════ */
+
+.doc__wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 3.4rem) var(--gut) 4rem;
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 3.4rem);
+  align-items: start;
+}
+@media (max-width: 900px) { .doc__wrap { grid-template-columns: 1fr; } }
+
+.toc { position: sticky; top: 74px; }
+@media (max-width: 900px) { .toc { position: static; } }
+.toc__title {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.13em;
+  text-transform: uppercase; color: var(--ink-mute); margin: 0 0 0.7rem;
+}
+.toc nav { display: flex; flex-direction: column; gap: 0.1rem; }
+.toc a {
+  color: var(--ink-dim); font-size: 0.9rem;
+  padding: 0.32rem 0.6rem; border-radius: 6px;
+  border-left: 2px solid transparent;
+}
+.toc a:hover { color: var(--ink); background: var(--surface); border-left-color: var(--accent); }
+
+.doc__body { min-width: 0; }
+.doc__head { margin-bottom: 2.4rem; }
+.doc__head h1 { font-size: clamp(1.9rem, 1.3rem + 2.4vw, 2.9rem); font-weight: 700; line-height: 1.08; margin-bottom: 0.9rem; }
+
+.doc__body section { padding: clamp(1.8rem, 4vw, 2.6rem) 0; border-top: 1px solid var(--line-soft); }
+.doc__body section:first-of-type { border-top: 0; padding-top: 0; }
+.doc__body h2 { font-size: clamp(1.3rem, 1.1rem + 0.9vw, 1.7rem); font-weight: 700; margin-bottom: 0.9rem; }
+.doc__body h3 { font-size: 1.02rem; font-weight: 650; margin: 1.6rem 0 0.5rem; }
+.doc__body p { color: var(--ink-dim); max-width: 68ch; margin: 0 0 0.9rem; }
+.doc__body b { color: var(--ink); font-weight: 600; }
+.doc__body a:not(.btn) { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.muted { color: var(--ink-mute); font-size: 0.9rem; }
+
+.olist { color: var(--ink-dim); max-width: 68ch; padding-left: 1.2rem; margin: 0 0 1.1rem; }
+.olist li { margin-bottom: 0.55rem; }
+
+.callout {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin: 1.2rem 0 !important;
+  max-width: none !important;
+  font-size: 0.94rem;
+}
+/* "por que" tem outra cor: é explicação de limite, não instrução. */
+.callout--why { border-left-color: #5FA8D6; }
+
+.fig {
+  margin: 1.4rem 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1.2rem;
+  overflow-x: auto;
+}
+.fig svg { width: 100%; height: auto; min-width: 460px; }
+.fig--sm svg { min-width: 380px; }
+
+.d-badge { fill: var(--accent); }
+.d-num { fill: #14171C; font: 700 11px var(--mono); text-anchor: middle; }
+.d-lbl { fill: var(--ink-mute); font: 500 11px var(--mono); letter-spacing: 0.06em; }
+.d-mid { text-anchor: middle; }
+.d-txt { fill: var(--ink); font: 500 13px var(--sans); }
+.d-acc { fill: var(--accent); font: 700 15px var(--mono); text-anchor: middle; }
+.d-on-acc { fill: #14171C; font: 600 11px var(--sans); text-anchor: middle; }
+.d-box rect { fill: var(--surface-2); stroke: var(--line); }
+
+.legend { display: flex; flex-direction: column; gap: 0.65rem; margin: 1.3rem 0 0; }
+.legend > div { display: flex; gap: 0.85rem; align-items: flex-start; }
+.legend dt {
+  width: 22px; height: 22px; flex: none;
+  display: grid; place-items: center;
+  background: var(--accent); color: #14171C;
+  border-radius: 5px; font: 700 0.76rem var(--mono);
+}
+.legend dd { margin: 0; color: var(--ink-dim); font-size: 0.94rem; }
+
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0.8rem; margin: 1.1rem 0; }
+.mini { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 1.1rem 1.2rem; }
+.mini h3 { margin: 0 0 0.35rem; font-size: 0.98rem; }
+.mini p { margin: 0; font-size: 0.92rem; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 1.1rem; }
+.chips span {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--c); border: 1px solid rgba(255,255,255,.18);
+}
+
+.qa { padding: 0.9rem 0; border-bottom: 1px solid var(--line-soft); }
+.qa:last-of-type { border-bottom: 0; }
+.qa h3 { margin-top: 0; }
+.qa p { margin-bottom: 0; }
