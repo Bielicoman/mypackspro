@@ -111,3 +111,28 @@ export function cepExtensionsDir(
   if (root === null) return null;
   return platform === 'win' ? `${root}\\Adobe\\CEP\\extensions` : `${root}/Adobe/CEP/extensions`;
 }
+
+/**
+ * Locais habituais de instalação, procurados além do PATH.
+ *
+ * Aplicações com interface gráfica no macOS não herdam o PATH do shell: são
+ * lançadas pelo Finder com um ambiente mínimo, e o `/opt/homebrew/bin` do
+ * Homebrew fica de fora. Sem esta lista, um utilizador com o ffmpeg instalado
+ * veria o painel a dizer que não o encontra.
+ *
+ * No Windows o PATH do processo já reflete o do utilizador, por isso não há
+ * nada a acrescentar.
+ */
+export function extraBinarySearchDirs(platform: Platform): readonly string[] {
+  if (platform === 'mac') {
+    return [
+      '/opt/homebrew/bin', // Homebrew em Apple Silicon
+      '/usr/local/bin', // Homebrew em Intel, e instalações manuais
+      '/opt/local/bin', // MacPorts
+    ];
+  }
+  if (platform === 'other') {
+    return ['/usr/local/bin', '/usr/bin'];
+  }
+  return [];
+}

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   appDataRoot,
+  extraBinarySearchDirs,
   bundledBinSubdir,
   cepExtensionsDir,
   detectPlatform,
@@ -128,5 +129,21 @@ describe('cepExtensionsDir', () => {
 
   it('sem ambiente devolve nulo', () => {
     expect(cepExtensionsDir('win', {})).toBeNull();
+  });
+});
+
+describe('extraBinarySearchDirs', () => {
+  it('macOS inclui o Homebrew das duas arquiteturas', () => {
+    const dirs = extraBinarySearchDirs('mac');
+    expect(dirs).toContain('/opt/homebrew/bin');
+    expect(dirs).toContain('/usr/local/bin');
+  });
+
+  it('Windows nao acrescenta nada — o PATH do processo ja basta', () => {
+    expect(extraBinarySearchDirs('win')).toEqual([]);
+  });
+
+  it('a ordem poe o Apple Silicon primeiro', () => {
+    expect(extraBinarySearchDirs('mac')[0]).toBe('/opt/homebrew/bin');
   });
 });

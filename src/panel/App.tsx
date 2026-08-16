@@ -461,7 +461,8 @@ export function App() {
       {!previews.toolsReady && live ? (
         <div className="progress progress--warn">
           <span className="progress__title">
-            ffmpeg não encontrado — os previews ficam desativados.
+            ffmpeg não encontrado — previews de vídeo e imagem desligados. No
+            macOS, instale com <b>brew install ffmpeg</b> e reabra o painel.
           </span>
         </div>
       ) : null}

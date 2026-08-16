@@ -6,7 +6,11 @@
  * contaminaria a distribuição do plugin. `libvpx` é BSD e roda numa build LGPL.
  */
 
-import { bundledBinSubdir, executableName } from '../core/platform/platform.js';
+import {
+  bundledBinSubdir,
+  executableName,
+  extraBinarySearchDirs,
+} from '../core/platform/platform.js';
 import { currentPlatform, envPath, existsSync, path, spawn, type ChildProc } from './nodeApi.js';
 
 export interface FfmpegTools {
@@ -41,6 +45,7 @@ export function findTools(pluginDir: string, configured?: string): FfmpegTools |
     ...(bundled === null ? [] : [p.join(pluginDir, ...bundled.split('/'))]),
     ...(configured !== undefined && configured !== '' ? [configured] : []),
     ...envPath(),
+    ...extraBinarySearchDirs(platform),
   ];
 
   for (const dir of candidates) {

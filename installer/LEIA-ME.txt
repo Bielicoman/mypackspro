@@ -28,7 +28,17 @@ Duplo-clique em  Desinstalar.bat
 --------------------------------------------------------------
 PRE-VISUALIZACOES
 --------------------------------------------------------------
-O FFmpeg ja vem incluido. Nao e preciso instalar nada.
+Windows: o FFmpeg ja vem incluido. Nao e preciso instalar nada.
+
+macOS: o suporte esta preparado no codigo mas NAO foi testado numa
+maquina Apple. Nao ha build LGPL de FFmpeg para macOS que possa ser
+distribuida com este plugin, entao os previews de video e imagem
+dependem de o ter instalado:
+
+   brew install ffmpeg
+
+O painel procura em /opt/homebrew/bin e /usr/local/bin. Os previews
+de audio funcionam sem FFmpeg nas duas plataformas.
 
 --------------------------------------------------------------
 NOTAS
