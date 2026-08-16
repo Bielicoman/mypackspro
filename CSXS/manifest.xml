@@ -43,6 +43,13 @@
 						<Size><Height>560</Height><Width>620</Width></Size>
 						<MinSize><Height>160</Height><Width>240</Width></MinSize>
 					</Geometry>
+					<Icons>
+						<Icon Type="Normal">./icons/panel.png</Icon>
+						<Icon Type="RollOver">./icons/panel.png</Icon>
+						<Icon Type="Disabled">./icons/panel-disabled.png</Icon>
+						<Icon Type="DarkNormal">./icons/panel.png</Icon>
+						<Icon Type="DarkRollOver">./icons/panel.png</Icon>
+					</Icons>
 				</UI>
 			</DispatchInfo>
 		</Extension>

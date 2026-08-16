@@ -16,6 +16,7 @@ mkdir -p "$DEST"
 cp -r "$ROOT/dist/." "$DEST/"
 cp -r "$ROOT/CSXS" "$DEST/"
 cp -r "$ROOT/jsx"  "$DEST/"
+cp -r "$ROOT/icons" "$DEST/"
 # O ffmpeg embutido vive em bin/win; sem ele o painel cai no PATH do sistema.
 [ -d "$ROOT/bin" ] && cp -r "$ROOT/bin" "$DEST/"
 [ -f "$ROOT/.debug" ] && cp "$ROOT/.debug" "$DEST/"
