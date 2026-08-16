@@ -20,7 +20,7 @@
 
   // 0 = vídeo, 1 = áudio, 2 = imagem. Mistura pensada, não aleatória:
   // é o que um pack de edição real tem dentro.
-  var KINDS = [0, 1, 0, 2, 1, 0, 0, 1, 2, 0, 1, 0];
+  var KINDS = [0, 1, 0, 2, 1, 0, 0, 1, 2, 0, 1, 0, 2, 0, 1, 0, 0, 2, 1, 0];
 
   function bars(seed) {
     var svg = '<svg class="wave" viewBox="0 0 100 40" preserveAspectRatio="none">';
@@ -57,7 +57,7 @@
       cells.forEach(function (c) { c.classList.add('is-ready'); });
     } else {
       // Escalonado e fora de ordem, como uma fila real a despachar trabalhos.
-      var order = [0, 3, 1, 6, 2, 5, 9, 4, 8, 7, 11, 10];
+      var order = [0, 3, 1, 6, 2, 5, 9, 4, 12, 8, 7, 15, 11, 10, 17, 13, 19, 14, 16, 18];
       order.forEach(function (idx, n) {
         setTimeout(function () {
           if (cells[idx]) cells[idx].classList.add('is-ready');
