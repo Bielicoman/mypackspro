@@ -8,6 +8,8 @@
  * comum, onde `isNodeAvailable()` devolve false.
  */
 
+import { appDataRoot, detectPlatform, pathListSeparator, type Platform } from '../core/platform/platform.js';
+
 type NodeRequire = (id: string) => unknown;
 
 export interface Dirent {
@@ -100,29 +102,40 @@ export function existsSync(p: string): boolean {
   }
 }
 
+function nodeProcess(): { platform?: string; env: Record<string, string | undefined> } | undefined {
+  return (window as unknown as {
+    process?: { platform?: string; env: Record<string, string | undefined> };
+  }).process;
+}
+
+/** Sistema em que o painel está a correr. */
+export function currentPlatform(): Platform {
+  return detectPlatform(nodeProcess()?.platform ?? '');
+}
+
 /** PATH do sistema, para procurar o ffmpeg quando não há binário embarcado. */
 export function envPath(): string[] {
-  const proc = (window as unknown as { process?: { env: Record<string, string | undefined> } })
-    .process;
-  return (proc?.env['PATH'] ?? '').split(';').filter(Boolean);
+  const proc = nodeProcess();
+  const sep = pathListSeparator(currentPlatform());
+  return (proc?.env['PATH'] ?? '').split(sep).filter(Boolean);
 }
 
 export const DATA_FOLDER = 'MyPacksPro';
 /** Nome usado antes do plugin passar a chamar-se My Packs Pro. */
 export const LEGACY_DATA_FOLDER = 'AscencioPack';
 
-function appDataRoot(): string {
-  const proc = (window as unknown as { process?: { env: Record<string, string | undefined> } })
-    .process;
-  return proc?.env['APPDATA'] ?? proc?.env['HOME'] ?? '.';
+/** Raiz de dados do utilizador, conforme a plataforma. */
+function userDataRoot(): string {
+  const env = nodeProcess()?.env ?? {};
+  return appDataRoot(currentPlatform(), env) ?? '.';
 }
 
 /** Pasta de dados antiga, para a migração única do rename. */
 export function legacyDataDir(): string {
-  return path().join(appDataRoot(), LEGACY_DATA_FOLDER);
+  return path().join(userDataRoot(), LEGACY_DATA_FOLDER);
 }
 
 /** Pasta de dados do plugin: %APPDATA%\MyPacksPro */
 export function dataDir(): string {
-  return path().join(appDataRoot(), DATA_FOLDER);
+  return path().join(userDataRoot(), DATA_FOLDER);
 }

@@ -8,7 +8,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 TMP="$ROOT/.fetch-tmp"
 mkdir -p "$TMP" "$ROOT/bin/win" "$ROOT/tools"
 
-# --- FFmpeg -----------------------------------------------------------------
+# --- FFmpeg (Windows) -------------------------------------------------------
 # LGPL de proposito: a build GPL obrigaria a abrir o codigo deste plugin.
 if [ ! -f "$ROOT/bin/win/ffmpeg.exe" ]; then
   echo ">> a obter o FFmpeg (LGPL)"
@@ -20,6 +20,18 @@ if [ ! -f "$ROOT/bin/win/ffmpeg.exe" ]; then
   cp "$(dirname "$SRC")/LICENSE.txt" "$ROOT/bin/win/LICENSE-ffmpeg.txt"
   echo "   ffmpeg pronto"
 fi
+
+# --- FFmpeg (macOS) ---------------------------------------------------------
+# O suporte a macOS esta preparado no codigo mas nao foi validado numa maquina
+# Apple. Coloque aqui uma build LGPL estatica de ffmpeg e ffprobe (sem .exe) e
+# o painel passa a encontra-los sozinho:
+#
+#   bin/mac/ffmpeg
+#   bin/mac/ffprobe
+#
+# Verifique a licenca antes de distribuir: as builds macOS mais divulgadas sao
+# GPL, o que obrigaria a abrir o codigo deste plugin.
+mkdir -p "$ROOT/bin/mac"
 
 # --- ZXPSignCmd -------------------------------------------------------------
 if [ ! -f "$ROOT/tools/ZXPSignCmd.exe" ]; then

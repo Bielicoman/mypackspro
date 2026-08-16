@@ -6,7 +6,8 @@
  * contaminaria a distribuição do plugin. `libvpx` é BSD e roda numa build LGPL.
  */
 
-import { envPath, existsSync, path, spawn, type ChildProc } from './nodeApi.js';
+import { bundledBinSubdir, executableName } from '../core/platform/platform.js';
+import { currentPlatform, envPath, existsSync, path, spawn, type ChildProc } from './nodeApi.js';
 
 export interface FfmpegTools {
   ffmpeg: string;
@@ -23,7 +24,7 @@ export interface MediaInfo {
 
 /* ------------------------------------------------------------------ localização */
 
-const EXE = (name: string): string => `${name}.exe`;
+
 
 /**
  * Procura os binários, em ordem de preferência:
@@ -33,15 +34,18 @@ const EXE = (name: string): string => `${name}.exe`;
  */
 export function findTools(pluginDir: string, configured?: string): FfmpegTools | null {
   const p = path();
+  const platform = currentPlatform();
+  const bundled = bundledBinSubdir(platform);
+
   const candidates: string[] = [
-    p.join(pluginDir, 'bin', 'win'),
+    ...(bundled === null ? [] : [p.join(pluginDir, ...bundled.split('/'))]),
     ...(configured !== undefined && configured !== '' ? [configured] : []),
     ...envPath(),
   ];
 
   for (const dir of candidates) {
-    const ffmpeg = p.join(dir, EXE('ffmpeg'));
-    const ffprobe = p.join(dir, EXE('ffprobe'));
+    const ffmpeg = p.join(dir, executableName('ffmpeg', platform));
+    const ffprobe = p.join(dir, executableName('ffprobe', platform));
     if (existsSync(ffmpeg) && existsSync(ffprobe)) return { ffmpeg, ffprobe };
   }
   return null;

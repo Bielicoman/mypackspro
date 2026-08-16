@@ -1,4 +1,5 @@
-import { fsp, path, spawn } from './nodeApi.js';
+import { revealCommand } from '../core/platform/platform.js';
+import { currentPlatform, fsp, path, spawn } from './nodeApi.js';
 
 async function isFile(absPath: string): Promise<boolean> {
   try {
@@ -13,25 +14,21 @@ async function isFile(absPath: string): Promise<boolean> {
  *
  * Sem o ouvinte de 'error', uma falha de arranque emite um evento sem tratamento
  * em vez de chegar a quem chamou — e o painel ficava a dizer que correu bem.
- * O Explorer devolve codigos de saida arbitrarios mesmo quando abre a janela,
- * por isso o criterio de sucesso e "arrancou", nao "saiu com zero".
+ * O gestor de ficheiros devolve codigos de saida arbitrarios mesmo quando abre
+ * a janela, por isso o criterio de sucesso e "arrancou", nao "saiu com zero".
  */
-function launch(cmd: string, args: readonly string[]): Promise<void> {
+function launch(
+  cmd: string,
+  args: readonly string[],
+  verbatim: boolean,
+): Promise<void> {
   return new Promise((resolve, reject) => {
     let settled = false;
     try {
-      const proc = spawn()(cmd, args, {
-        // NAO passar windowsHide aqui. Medido: com windowsHide o processo nasce
-        // com SW_HIDE e o Explorer obedece — a janela abre escondida e parece
-        // que o botao nao faz nada. (0 janelas com hide, 1 sem hide.)
-        // Para o ffmpeg continua a fazer sentido, porque ai queremos mesmo
-        // esconder a consola.
-        //
-        // O Explorer faz o seu proprio parsing de /select, e o Node volta a citar
-        // os argumentos por cima — o que parte caminhos com espacos. O verbatim
-        // desliga essa segunda citacao e deixa-nos citar como ele espera.
-        windowsVerbatimArguments: true,
-      });
+      // NAO passar windowsHide aqui. Medido: com windowsHide o processo nasce
+      // com SW_HIDE e o Explorer obedece — a janela abre escondida e parece que
+      // o botao nao faz nada. (0 janelas com hide, 1 sem hide.)
+      const proc = spawn()(cmd, args, { windowsVerbatimArguments: verbatim });
       proc.on('error', (err) => {
         if (settled) return;
         settled = true;
@@ -48,13 +45,16 @@ function launch(cmd: string, args: readonly string[]): Promise<void> {
   });
 }
 
-/** Abre o Explorer com o arquivo selecionado; se ele sumiu, abre a pasta. */
+/** Revela o caminho no gestor de ficheiros: Explorer no Windows, Finder no macOS. */
 export async function revealInExplorer(absPath: string): Promise<void> {
-  const target = absPath.replace(/\//g, '\\');
-  if (await isFile(absPath)) {
-    await launch('explorer.exe', ['/select,"' + target + '"']);
-    return;
+  const platform = currentPlatform();
+  const file = await isFile(absPath);
+  const target = file ? absPath : path().dirname(absPath);
+
+  const cmd = revealCommand(platform, target, file);
+  if (cmd === null) {
+    throw new Error('Esta plataforma nao tem um gestor de ficheiros suportado');
   }
-  const folder = path().dirname(target);
-  await launch('explorer.exe', ['"' + folder + '"']);
+
+  await launch(cmd.command, cmd.args, cmd.windowsVerbatimArguments);
 }

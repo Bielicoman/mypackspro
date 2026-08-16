@@ -27,6 +27,7 @@ cp -r "$ROOT/dist/." "$STAGE/"
 cp -r "$ROOT/CSXS" "$STAGE/"
 cp -r "$ROOT/jsx"  "$STAGE/"
 cp -r "$ROOT/icons" "$STAGE/"
+# Vao as duas plataformas: o CEP escolhe a certa em tempo de execucao.
 [ -d "$ROOT/bin" ] && cp -r "$ROOT/bin" "$STAGE/"
 # Mapas de codigo nao vao para producao: sao maiores que o proprio bundle.
 find "$STAGE" -name "*.map" -delete
