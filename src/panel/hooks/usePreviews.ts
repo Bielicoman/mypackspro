@@ -100,13 +100,22 @@ export function usePreviews(): PreviewsApi {
     // API dá amostras e duração numa só passagem. Guardamos picos em vez de uma
     // imagem para poder desenhar a parte tocada e a agulha.
     if (asset.format.family === 'audio') {
-      const meta = await ensureAudioMeta(asset);
-      entries.current.set(id, {
-        state: 'ready',
-        peaks: meta.peaks,
-        preview: { url: '', kind: 'image', durationSec: meta.durationSec },
-      });
-      return;
+      try {
+        const meta = await ensureAudioMeta(asset);
+        entries.current.set(id, {
+          state: 'ready',
+          peaks: meta.peaks,
+          preview: { url: '', kind: 'image', durationSec: meta.durationSec },
+        });
+        return;
+      } catch {
+        /*
+         * Nem todo o audio e descodificavel pelo navegador — WMA, DTS, AC3 e
+         * AMR estao no registo mas o Chromium recusa-os. Ai recorre-se ao
+         * ffmpeg, que desenha a waveform como imagem: perde-se a agulha e a
+         * parte reproduzida, mas o asset deixa de ficar sem preview nenhum.
+         */
+      }
     }
 
     const tools = toolsRef.current;
