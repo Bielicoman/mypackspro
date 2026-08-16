@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Packs Pro — sua biblioteca de assets dentro do Premiere</title>
+<meta name="description" content="Aponte para uma pasta do seu PC e tenha todos os seus packs de edição numa grade visual com preview animado, prontos para arrastar para a timeline do Premiere Pro.">
+<meta property="og:title" content="My Packs Pro">
+<meta property="og:description" content="Sua biblioteca de assets, dentro do Premiere.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="skip" href="#conteudo">Ir para o conteúdo</a>
+
+<header class="nav">
+  <a class="brand" href="#" aria-label="My Packs Pro">
+    <svg class="brand__mark" viewBox="0 0 96 96" aria-hidden="true">
+      <rect x="18" y="20" width="60" height="16" rx="4" class="m-3"/>
+      <rect x="18" y="20" width="5"  height="16" rx="2.5" class="m-l1"/>
+      <rect x="14" y="40" width="68" height="16" rx="4" class="m-2"/>
+      <rect x="14" y="40" width="5"  height="16" rx="2.5" class="m-l2"/>
+      <rect x="10" y="60" width="76" height="16" rx="4" class="m-1"/>
+      <rect x="10" y="60" width="5"  height="16" rx="2.5" class="m-acc"/>
+    </svg>
+    <span class="brand__name">My&nbsp;Packs&nbsp;Pro</span>
+  </a>
+  <nav class="nav__links">
+    <a href="#recursos">Recursos</a>
+    <a href="#como">Como funciona</a>
+    <a href="#formatos">Formatos</a>
+    <a class="btn btn--ghost" href="https://github.com/Bielicoman/mypackspro">GitHub</a>
+    <a class="btn btn--solid" href="#baixar">Baixar</a>
+  </nav>
+</header>
+
+<main id="conteudo">
+
+  <!-- ══════════════════════════ HERO ══════════════════════════ -->
+  <section class="hero">
+    <div class="hero__copy">
+      <p class="eyebrow">Extensão para Adobe Premiere Pro</p>
+      <h1>Sua biblioteca de assets,<br><em>dentro</em> do Premiere.</h1>
+      <p class="lede">
+        Aponte para uma pasta do seu PC. Seus packs — SFX, VFX, overlays, trilhas,
+        memes — viram uma grade visual com preview animado, prontos para arrastar
+        para a timeline.
+      </p>
+      <div class="hero__cta">
+        <a class="btn btn--solid btn--lg" href="#baixar">Baixar grátis</a>
+        <a class="btn btn--ghost btn--lg" href="#como">Ver como funciona</a>
+      </div>
+      <p class="hero__meta">
+        Windows · Premiere Pro 24.0+ · FFmpeg já incluído
+      </p>
+    </div>
+
+    <!-- O painel é o herói: em vez de descrever, ele demonstra. -->
+    <div class="hero__panel" aria-hidden="true">
+      <div class="panel">
+        <div class="panel__tabs">
+          <span class="tab tab--on">CINEPACK</span>
+          <span class="tab">ALEX ASCENCIO</span>
+          <span class="tab tab--add">+</span>
+        </div>
+        <div class="panel__body">
+          <aside class="panel__side">
+            <div class="side__search"></div>
+            <div class="side__row side__row--on"><i></i>Todos os assets<b>2359</b></div>
+            <div class="side__row"><i class="dot dot--v"></i>MEMES<b>204</b></div>
+            <div class="side__row"><i class="dot dot--g"></i>SFX<b>492</b></div>
+            <div class="side__row"><i class="dot dot--b"></i>VFX<b>123</b></div>
+            <div class="side__row"><i class="dot dot--r"></i>Overlays<b>88</b></div>
+            <div class="side__row"><i></i>Backgrounds<b>124</b></div>
+            <div class="side__row"><i></i>Trilhas<b>499</b></div>
+          </aside>
+          <div class="panel__grid" id="grid"></div>
+        </div>
+        <div class="panel__foot">
+          <span class="slider"></span>
+          <span class="foot__credit">by Alex Ascencio</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ RECURSOS ══════════════════════════ -->
+  <section id="recursos" class="band">
+    <div class="band__head reveal">
+      <p class="eyebrow">Recursos</p>
+      <h2>Feito por quem edita, para quem edita</h2>
+    </div>
+
+    <div class="cards">
+      <article class="card reveal">
+        <h3>Preview de tudo</h3>
+        <p>
+          Vídeo roda sozinho na grade. Áudio toca ao passar o mouse, com waveform
+          desenhada e agulha acompanhando o som.
+        </p>
+      </article>
+      <article class="card reveal">
+        <h3>Suas pastas já são a organização</h3>
+        <p>
+          As subpastas do pack viram categorias. Nada para configurar, nada para
+          catalogar à mão.
+        </p>
+      </article>
+      <article class="card card--accent reveal">
+        <h3>Nunca come seu vídeo</h3>
+        <p>
+          A inserção entra sempre numa faixa <em>acima</em> do que já existe,
+          criando faixa nova se precisar. Seu trabalho não é sobrescrito.
+        </p>
+      </article>
+      <article class="card reveal">
+        <h3>Cópia para o projeto</h3>
+        <p>
+          O asset é copiado para junto do <code>.prproj</code>. Desligar o SSD
+          deixa de significar mídia offline.
+        </p>
+      </article>
+      <article class="card reveal">
+        <h3>Organização automática</h3>
+        <p>
+          Cada categoria pode ter pasta de destino e rótulo de cor próprios. O
+          asset chega ao projeto já arrumado.
+        </p>
+      </article>
+      <article class="card reveal">
+        <h3>Aguenta pack grande</h3>
+        <p>
+          Testado com 2.359 assets. Previews gerados sob demanda e guardados em
+          cache — cada arquivo é processado uma vez na vida.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ COMO FUNCIONA ══════════════════════════ -->
+  <section id="como" class="band band--tight">
+    <div class="band__head reveal">
+      <p class="eyebrow">Como funciona</p>
+      <h2>Três passos, uma vez só</h2>
+    </div>
+
+    <ol class="steps">
+      <li class="step reveal">
+        <span class="step__n">1</span>
+        <div>
+          <h3>Aponte a pasta</h3>
+          <p>Clique em <b>+</b> e escolha o pack. O plugin lê tudo e monta a grade.</p>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step__n">2</span>
+        <div>
+          <h3>Configure uma vez</h3>
+          <p>
+            Botão direito numa categoria: defina a pasta de destino e o rótulo de
+            cor. As regras são herdadas pelas subcategorias.
+          </p>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step__n">3</span>
+        <div>
+          <h3>Edite</h3>
+          <p>
+            Duplo-clique insere no playhead. Arrastar leva para o painel Projeto,
+            de onde você posiciona com precisão.
+          </p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ══════════════════════════ FORMATOS ══════════════════════════ -->
+  <section id="formatos" class="band">
+    <div class="band__head reveal">
+      <p class="eyebrow">Formatos</p>
+      <h2>138 extensões reconhecidas</h2>
+      <p class="band__lede">
+        O que o Premiere não importa fica escondido — a grade só mostra o que
+        você pode realmente usar.
+      </p>
+    </div>
+
+    <div class="fmt reveal">
+      <div class="fmt__group">
+        <h4>Vídeo</h4>
+        <p>mp4 · mov · mkv · mxf · webm · avi · m2ts · r3d · braw · prores</p>
+      </div>
+      <div class="fmt__group">
+        <h4>Áudio</h4>
+        <p>wav · mp3 · flac · opus · m4a · aac · ogg · aiff · wma</p>
+      </div>
+      <div class="fmt__group">
+        <h4>Imagem</h4>
+        <p>png · jpg · webp · exr · tga · tiff · psd · gif · heic</p>
+      </div>
+      <div class="fmt__group">
+        <h4>Foto RAW</h4>
+        <p>cr2 · cr3 · nef · arw · dng · orf · raf · rw2</p>
+      </div>
+      <div class="fmt__group">
+        <h4>Gráficos e cor</h4>
+        <p>mogrt · cube · 3dl · look · ai · eps</p>
+      </div>
+      <div class="fmt__group">
+        <h4>Projetos</h4>
+        <p>prproj · aep · srt · edl · aaf · fcpxml</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ BAIXAR ══════════════════════════ -->
+  <section id="baixar" class="band band--cta">
+    <div class="cta reveal">
+      <p class="eyebrow">Download</p>
+      <h2>Instale em dois cliques</h2>
+      <p class="band__lede">
+        Baixe, feche o Premiere e abra o arquivo <code>.zxp</code>. O FFmpeg já
+        vem incluído — não é preciso instalar mais nada.
+      </p>
+      <div class="cta__row">
+        <a class="btn btn--solid btn--lg" href="https://github.com/Bielicoman/mypackspro/releases/latest/download/MyPacksPro.zxp" download>
+          Baixar My Packs Pro · 55 MB
+        </a>
+        <a class="btn btn--ghost btn--lg" href="https://github.com/Bielicoman/mypackspro">
+          Ver o código
+        </a>
+      </div>
+      <dl class="specs">
+        <div><dt>Sistema</dt><dd>Windows</dd></div>
+        <div><dt>Premiere</dt><dd>24.0 ou superior</dd></div>
+        <div><dt>Tamanho</dt><dd>55 MB</dd></div>
+        <div><dt>Preço</dt><dd>Grátis</dd></div>
+      </dl>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot__in">
+    <span>My Packs Pro — feito por Alex Ascencio</span>
+    <nav>
+      <a href="https://github.com/Bielicoman/mypackspro">GitHub</a>
+      <a href="https://github.com/Bielicoman/mypackspro/issues">Reportar problema</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="app.js" defer></script>
+</body>
+</html>
