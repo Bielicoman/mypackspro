@@ -1,0 +1,38 @@
+My Packs Pro — Licenca de Uso
+Copyright (c) 2026 Alex Ascencio. Todos os direitos reservados.
+
+CODIGO A VISTA, NAO LIVRE
+=========================
+
+Este codigo-fonte e publicado para leitura, estudo, auditoria e para permitir
+que utilizadores reportem problemas com precisao. Nao e software livre nem de
+codigo aberto.
+
+E PERMITIDO
+-----------
+1. Ler, estudar e analisar o codigo.
+2. Compilar e executar uma versao propria, para uso pessoal.
+3. Abrir issues e propor alteracoes ao repositorio oficial.
+
+NAO E PERMITIDO, sem autorizacao escrita do autor
+-------------------------------------------------
+1. Redistribuir este codigo ou binarios dele derivados, gratuitamente ou nao.
+2. Publicar versoes modificadas, com ou sem alteracao de nome.
+3. Usar o nome "My Packs Pro", a marca ou a identidade visual em qualquer
+   produto derivado.
+4. Vender, sublicenciar ou incluir este software noutro produto.
+
+COMPONENTES DE TERCEIROS
+------------------------
+O instalador distribui binarios do FFmpeg sob licenca LGPL, que mantem as
+suas proprias condicoes. O plugin invoca o FFmpeg como processo separado, sem
+o ligar ao seu codigo. Detalhes e origem do codigo-fonte em:
+  bin/win/LEIA-ME-ffmpeg.txt
+  bin/win/LICENSE-ffmpeg.txt
+
+SEM GARANTIA
+------------
+O SOFTWARE E FORNECIDO "COMO ESTA", SEM GARANTIA DE QUALQUER TIPO. O AUTOR NAO
+SE RESPONSABILIZA POR QUAISQUER DANOS DECORRENTES DO SEU USO.
+
+Contacto para licenciamento: ascencioalexgabriel@gmail.com

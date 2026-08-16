@@ -1,0 +1,18 @@
+# dependencias e artefactos
+node_modules/
+dist/
+release/
+
+# CHAVE DE ASSINATURA — nunca publicar.
+# Quem tiver este ficheiro consegue assinar extensoes em nome do autor.
+cert/
+
+# Binarios de terceiros, obtidos por script (ver scripts/fetch-ffmpeg.sh)
+bin/
+tools/
+
+# ambiente
+.DS_Store
+Thumbs.db
+*.log
+.debug
