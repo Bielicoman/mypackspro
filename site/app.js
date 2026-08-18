@@ -93,4 +93,19 @@
     el.dataset.i = groups[key]++;
     io.observe(el);
   });
+
+  /* ─────────────── sincronizador de versão ao vivo ─────────────── */
+  try {
+    fetch('version.json?_t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data || !data.version) return;
+        var v = data.version;
+        document.querySelectorAll('.live-version-badge, .brand__version, [data-version-tag]').forEach(function (el) {
+          el.textContent = 'v' + v;
+        });
+      })
+      .catch(function () {});
+  } catch (e) {}
 })();
+

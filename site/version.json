@@ -1,0 +1,16 @@
+{
+  "pluginId": "com.alexascencio.mypackspro",
+  "name": "My Packs Pro",
+  "version": "0.1.0",
+  "minPremiereVersion": "2024",
+  "releaseDate": "2026-08-18",
+  "downloadUrl": "https://github.com/Bielicoman/mypackspro/releases/latest/download/MyPacksPro.zxp",
+  "zipUrl": "https://github.com/Bielicoman/mypackspro/archive/refs/heads/main.zip",
+  "mandatory": false,
+  "changelog": [
+    "Compatibilidade Premiere Pro 2020-2026+",
+    "Empacotamento ZXP puro de alta performance",
+    "Live Version Synchronizer"
+  ],
+  "fullName": "My Packs Pro 0.1.0"
+}
