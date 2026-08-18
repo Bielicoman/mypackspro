@@ -164,45 +164,56 @@ h3 { font-size: 1.02rem; font-weight: 600; letter-spacing: -0.008em; }
 .hero__panel { margin-top: clamp(2.5rem, 6vw, 4.5rem); }
 
 .panel {
-  background: #232323;
-  border: 1px solid #000;
+  background: #161618;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 40px 90px -30px rgba(0,0,0,.9);
+  box-shadow: 0 40px 90px -20px rgba(0,0,0,.95), 0 0 0 1px rgba(255,255,255,0.05) inset;
   font-size: 11px;
 }
 
-.panel__tabs { display: flex; align-items: center; gap: 3px; padding: 6px 8px; border-bottom: 1px solid #1A1A1A; }
-.tab { padding: 3px 10px; color: #9B9B9B; font-size: 10px; white-space: nowrap; }
-.tab--on { background: #3C3C3C; color: #fff; }
-.tab--add { margin-left: auto; color: var(--accent); }
+.panel__tabs { display: flex; align-items: center; gap: 4px; padding: 7px 10px; background: #1c1c1f; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.tab { padding: 4px 12px; color: #a1a1aa; font-size: 10.5px; border-radius: 6px; font-weight: 500; white-space: nowrap; transition: all .15s ease; }
+.tab--on { background: rgba(255,255,255,0.12); color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+.tab--add { margin-left: auto; color: var(--accent); font-weight: bold; }
 
-.panel__body { display: grid; grid-template-columns: 136px 1fr; min-height: 320px; }
-@media (max-width: 620px) { .panel__body { grid-template-columns: 104px 1fr; } }
+.panel__body { display: grid; grid-template-columns: 140px 1fr; min-height: 320px; background: #161618; }
+@media (max-width: 620px) { .panel__body { grid-template-columns: 108px 1fr; } }
 
-.panel__side { background: #262626; border-right: 1px solid #1A1A1A; padding: 7px; }
-.side__search { height: 20px; background: #1C1C1C; border: 1px solid #3A3A3A; margin-bottom: 7px; }
-.side__row { display: flex; align-items: center; gap: 5px; height: 23px; padding: 0 4px; color: #C8C8C8; font-size: 10px; }
-.side__row b { margin-left: auto; color: #6E6E6E; font-weight: 400; font-size: 9px; font-variant-numeric: tabular-nums; }
-.side__row--on { background: #3C3C3C; color: #fff; }
+.panel__side { background: #141416; border-right: 1px solid rgba(255,255,255,0.07); padding: 8px; }
+.side__search { height: 22px; background: #1c1c1f; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.3) inset; }
+.side__row { display: flex; align-items: center; gap: 6px; height: 25px; padding: 0 8px; color: #a1a1aa; font-size: 10px; border-radius: 6px; font-weight: 500; transition: all .15s; }
+.side__row b { margin-left: auto; color: #71717a; font-weight: 600; font-size: 9px; font-variant-numeric: tabular-nums; background: rgba(255,255,255,0.07); padding: 1px 6px; border-radius: 10px; }
+.side__row--on { background: linear-gradient(180deg, #0a84ff 0%, #0066cc 100%); color: #fff; box-shadow: 0 2px 6px rgba(10,132,255,0.35); }
+.side__row--on b { background: rgba(255,255,255,0.25); color: #fff; }
 .side__row i { width: 7px; height: 7px; border-radius: 50%; flex: none; }
 .dot--v { background: var(--lbl-v); } .dot--g { background: var(--lbl-g); }
 .dot--b { background: var(--lbl-b); } .dot--r { background: var(--lbl-r); }
 
 .panel__grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
-  gap: 8px; padding: 9px; align-content: start;
+  gap: 10px; padding: 10px; align-content: start;
 }
 
-.cell { display: flex; flex-direction: column; gap: 4px; }
+.cell { display: flex; flex-direction: column; gap: 5px; }
 .cell__thumb {
-  aspect-ratio: 16 / 9; background: #000; overflow: hidden;
+  aspect-ratio: 16 / 9; background: #1c1c1f; overflow: hidden;
   position: relative; display: grid; place-items: center;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
-.cell__name { height: 6px; background: #3A3A3A; width: 76%; }
+.cell:hover .cell__thumb {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.25);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+}
+.cell__name { height: 6px; background: rgba(255,255,255,0.12); border-radius: 3px; width: 76%; }
 
 .cell__thumb::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.06) 50%, transparent 70%);
+  background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.08) 50%, transparent 70%);
   transform: translateX(-100%);
   animation: sweep 1.6s ease-in-out infinite;
 }
@@ -210,15 +221,15 @@ h3 { font-size: 1.02rem; font-weight: 600; letter-spacing: -0.008em; }
 @keyframes sweep { to { transform: translateX(100%); } }
 @media (prefers-reduced-motion: reduce) { .cell__thumb::after { animation: none; opacity: 0; } }
 
-.cell.is-ready .cell__thumb { background: var(--fill, #2A2F3A); }
+.cell.is-ready .cell__thumb { background: var(--fill, #222226); }
 .wave { width: 84%; height: 58%; display: block; }
-.wave rect { fill: #DADADA; }
+.wave rect { fill: rgba(255,255,255,0.7); }
 .play { width: 0; height: 0; border-left: 10px solid rgba(255,255,255,.85); border-top: 7px solid transparent; border-bottom: 7px solid transparent; }
 
-.panel__foot { display: flex; align-items: center; gap: 9px; padding: 6px 9px; border-top: 1px solid #1A1A1A; }
-.slider { width: 72px; height: 2px; background: #565656; position: relative; }
-.slider::after { content: ""; position: absolute; left: 30%; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: #C8C8C8; }
-.foot__credit { margin-left: auto; color: #6E6E6E; font-size: 9px; }
+.panel__foot { display: flex; align-items: center; gap: 9px; padding: 7px 12px; background: #1c1c1f; border-top: 1px solid rgba(255,255,255,0.08); }
+.slider { width: 72px; height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; position: relative; }
+.slider::after { content: ""; position: absolute; left: 30%; top: -3.5px; width: 10px; height: 10px; border-radius: 50%; background: #0a84ff; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+.foot__credit { margin-left: auto; color: #71717a; font-size: 9.5px; font-weight: 500; }
 
 /* ───────────────────────────── faixas ───────────────────────────── */
 .band {

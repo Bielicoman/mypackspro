@@ -78,20 +78,15 @@ function AssetCellBase({
   register,
 }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const thumbRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [hover, setHover] = useState(false);
-  /** Posição de reprodução do áudio, 0..1. Só muda enquanto o rato está em cima. */
+  const [scrubRatio, setScrubRatio] = useState<number | null>(null);
+  const [isScrubbing, setIsScrubbing] = useState(false);
+  /** Posição de reprodução do áudio, 0..1. */
   const [progress, setProgress] = useState(0);
   const [elapsed, setElapsed] = useState(0);
-  /**
-   * A célula está à vista (ou perto)?
-   *
-   * Enquanto não estiver, o `<video>` nem chega a existir. Sem isto, percorrer
-   * um pack grande deixava para trás milhares de elementos de vídeo com `src`
-   * atribuído, cada um a segurar buffers — a causa principal de o painel ficar
-   * lento em máquinas modestas.
-   */
   const [near, setNear] = useState(false);
 
   const draggable = asset.format.importable;
@@ -107,29 +102,29 @@ function AssetCellBase({
   }, [register, asset]);
 
   /*
-   * Reprodução automática: só com o painel visível e com o play ligado.
-   * O hover é uma acção explícita do utilizador, por isso toca à mesma quando
-   * a reprodução automática está pausada — é para isso que serve o botão.
+   * Reprodução automática / hover: só com o painel visível.
+   * Quando não está em scrubbing manual, o vídeo toca normalmente.
    */
   useEffect(() => {
     const v = videoRef.current;
     if (v === null) return;
-    if (active || hover) void v.play().catch(() => undefined);
-    else v.pause();
-  }, [active, hover, preview]);
+    if (isScrubbing) {
+      v.pause();
+    } else if (active || hover) {
+      void v.play().catch(() => undefined);
+    } else {
+      v.pause();
+    }
+  }, [active, hover, isScrubbing, preview]);
 
-  /* Áudio toca o arquivo original: a Fase 0 mediu que MP3, AAC, Opus e FLAC
-     tocam nativamente no CEF, por isso não é preciso gerar proxy de áudio. */
+  /* Áudio toca o arquivo original com suporte a seek em tempo real */
   const startAudio = useCallback(() => {
-    // Sem verificar `active`: o hover só acontece com o painel à vista, e deve
-    // tocar mesmo com a reprodução automática pausada.
     if (!isAudio) return;
 
     let el = audioRef.current;
     if (el === null) {
       el = new Audio(originalUrl(asset.absPath));
       el.loop = true;
-      // Alimenta a linha de progresso sobre a waveform.
       el.addEventListener('timeupdate', () => {
         const total = el?.duration ?? 0;
         const now = el?.currentTime ?? 0;
@@ -151,8 +146,7 @@ function AssetCellBase({
     setElapsed(0);
   }, []);
 
-  /* Ao desmontar, largar o elemento de áudio por completo: pausar não liberta
-     o arquivo nem os buffers, e eles acumulavam-se ao navegar pelo pack. */
+  /* Ao desmontar, largar o elemento de áudio */
   useEffect(
     () => () => {
       const el = audioRef.current;
@@ -170,7 +164,6 @@ function AssetCellBase({
       e.preventDefault();
       return;
     }
-    // O gesto central: o Premiere recebe o caminho absoluto do arquivo original.
     e.dataTransfer.setData('com.adobe.cep.dnd.file.0', asset.absPath);
     e.dataTransfer.effectAllowed = 'copy';
   };
@@ -187,18 +180,58 @@ function AssetCellBase({
 
   const onLeave = () => {
     setHover(false);
+    setIsScrubbing(false);
+    setScrubRatio(null);
     stopAudio();
     const v = videoRef.current;
     if (v !== null) {
       v.muted = true;
       if (!active) v.pause();
+      else void v.play().catch(() => undefined);
     }
   };
 
-  /* A etiqueta mostra o tempo decorrido enquanto o áudio toca, e a duração
-     total no resto do tempo — que é a informação útil ao escolher um asset. */
+  /**
+   * Hover Scrub / Skimming estilo Final Cut Pro e Adobe Premiere Pro.
+   * Ao mover o mouse sobre o thumbnail (0% da esquerda a 100% da direita),
+   * busca imediatamente o frame do vídeo ou posição do áudio com agulha visual.
+   */
+  const onMouseMoveThumb = (e: React.MouseEvent<HTMLDivElement>) => {
+    const thumb = thumbRef.current;
+    if (!thumb) return;
+    const rect = thumb.getBoundingClientRect();
+    if (rect.width <= 0) return;
+
+    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    setScrubRatio(ratio);
+    setIsScrubbing(true);
+
+    if (preview !== undefined && preview.kind === 'video' && videoRef.current) {
+      const v = videoRef.current;
+      const dur = (v.duration && !isNaN(v.duration) && isFinite(v.duration) && v.duration > 0)
+        ? v.duration
+        : (duration && duration > 0 ? duration : 0);
+      if (dur > 0) {
+        const targetTime = ratio * dur;
+        v.currentTime = targetTime;
+        setElapsed(targetTime);
+      }
+    } else if (isAudio && audioRef.current) {
+      const a = audioRef.current;
+      const dur = (a.duration && !isNaN(a.duration) && isFinite(a.duration) && a.duration > 0)
+        ? a.duration
+        : (duration && duration > 0 ? duration : 0);
+      if (dur > 0) {
+        const targetTime = ratio * dur;
+        a.currentTime = targetTime;
+        setElapsed(targetTime);
+        setProgress(ratio);
+      }
+    }
+  };
+
   const timeLabel =
-    isAudio && hover && elapsed > 0
+    (isAudio || (preview !== undefined && preview.kind === 'video')) && hover && elapsed > 0
       ? formatDuration(elapsed)
       : duration !== undefined
         ? formatDuration(duration)
@@ -206,10 +239,17 @@ function AssetCellBase({
 
   const badge = [timeLabel, asset.ext.toUpperCase()].filter(Boolean).join(' · ');
 
+  const currentScrubTime =
+    scrubRatio !== null
+      ? formatDuration(elapsed || (scrubRatio * (duration || 0)))
+      : '';
+
+  const showVideoSkimmer = hover && preview !== undefined && preview.kind === 'video';
+
   return (
     <div
       ref={rootRef}
-      className={`cell${draggable ? '' : ' cell--locked'}`}
+      className={`cell${draggable ? '' : ' cell--locked'}${hover ? ' cell--hover' : ''}`}
       draggable={draggable}
       onDragStart={onDragStart}
       onDragEnd={() => onDragFinished(asset)}
@@ -224,39 +264,76 @@ function AssetCellBase({
         asset.absPath,
         failure === undefined ? null : `Preview falhou: ${failure}`,
         draggable
-          ? 'Duplo-clique: inserir no playhead\nArrastar: importar para o Projeto'
+          ? 'Duplo-clique: inserir no playhead\nArrastar: importar para o Projeto\nPasse o mouse: navegar na timeline do asset'
           : 'O Premiere nao importa este tipo de arquivo',
       ]
         .filter((part): part is string => part !== null)
         .join('\n\n')}
     >
-      <div className="cell__thumb">
+      <div
+        ref={thumbRef}
+        className="cell__thumb"
+        onMouseMove={onMouseMoveThumb}
+      >
         {isAudio && peaks !== undefined ? (
           <div className="wave">
-            <Waveform peaks={peaks} progress={progress} />
-            {hover && progress > 0 ? (
+            <Waveform peaks={peaks} progress={scrubRatio ?? progress} />
+            {hover && (scrubRatio !== null || progress > 0) ? (
               <>
-                <span className="wave__cursor" style={{ left: `${progress * 100}%` }} />
+                <span
+                  className="wave__cursor"
+                  style={{ left: `${((scrubRatio ?? progress) * 100)}%` }}
+                />
                 <span
                   className="wave__time"
-                  style={{ left: `${progress * 100}%` }}
+                  style={{
+                    left: `${Math.min(88, Math.max(12, (scrubRatio ?? progress) * 100))}%`,
+                  }}
                 >
-                  {formatDuration(elapsed)}
+                  {currentScrubTime || formatDuration(elapsed)}
                 </span>
               </>
             ) : null}
           </div>
         ) : preview !== undefined && preview.kind === 'video' ? (
           near ? (
-            <video
-              ref={videoRef}
-              src={preview.url}
-              muted
-              loop
-              playsInline
-              autoPlay={active}
-              preload="metadata"
-            />
+            <>
+              <video
+                ref={videoRef}
+                src={preview.url}
+                muted
+                loop
+                playsInline
+                autoPlay={active}
+                preload="metadata"
+              />
+              {showVideoSkimmer ? (
+                <div className="cell__skimmer" aria-hidden="true">
+                  <div className="cell__skimmer-track">
+                    <div
+                      className="cell__skimmer-progress"
+                      style={{
+                        width: `${((scrubRatio ?? (videoRef.current?.currentTime && duration ? videoRef.current.currentTime / duration : 0)) * 100)}%`,
+                      }}
+                    />
+                    <div
+                      className="cell__skimmer-needle"
+                      style={{ left: `${((scrubRatio ?? 0) * 100)}%` }}
+                    />
+                  </div>
+                  {scrubRatio !== null && (
+                    <span
+                      className="cell__skimmer-tooltip"
+                      style={{
+                        left: `${Math.min(88, Math.max(12, scrubRatio * 100))}%`,
+                      }}
+                    >
+                      {currentScrubTime}
+                    </span>
+                  )}
+                </div>
+              ) : null}
+            </>
           ) : (
             <span className="cell__idle" />
           )
@@ -270,7 +347,7 @@ function AssetCellBase({
           </span>
         )}
 
-        {(preview !== undefined || peaks !== undefined) && badge !== '' ? (
+        {(preview !== undefined || peaks !== undefined) && badge !== '' && !showVideoSkimmer ? (
           <span className="cell__badge">{badge}</span>
         ) : null}
       </div>
