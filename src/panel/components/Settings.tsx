@@ -62,6 +62,9 @@ interface Props {
   cacheInfo: string;
   onClearCache: () => void;
   onPickCopyFolder: () => void;
+  currentVersion?: string;
+  onCheckUpdate?: () => void;
+  checkingUpdate?: boolean;
 }
 
 export function Settings({
@@ -71,6 +74,9 @@ export function Settings({
   cacheInfo,
   onClearCache,
   onPickCopyFolder,
+  currentVersion,
+  onCheckUpdate,
+  checkingUpdate,
 }: Props) {
   return (
     <div className="modal" onClick={onClose}>
@@ -165,6 +171,18 @@ export function Settings({
             </span>
             <button className="btn" onClick={onClearCache}>
               Limpar
+            </button>
+          </div>
+
+          <div className="setting setting--static" style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 12 }}>
+            <span className="setting__body">
+              <span className="setting__label">Versão do Plugin</span>
+              <span className="setting__hint">
+                My Packs Pro {currentVersion || 'v0.2.0'} · Sistema de atualização automática
+              </span>
+            </span>
+            <button className="btn" onClick={onCheckUpdate} disabled={checkingUpdate}>
+              {checkingUpdate ? 'Verificando…' : 'Buscar Atualizações'}
             </button>
           </div>
         </div>

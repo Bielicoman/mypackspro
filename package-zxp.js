@@ -163,15 +163,21 @@ function createZxp(sourceDir, outputFile) {
 
 try {
   createZxp(rootDir, zxpOutput);
+  
+  const zipOutput = path.join(rootDir, 'MyPacksPro.zip');
+  fs.copyFileSync(zxpOutput, zipOutput);
+
   if (!fs.existsSync(releaseDir)) fs.mkdirSync(releaseDir, { recursive: true });
   fs.copyFileSync(zxpOutput, path.join(releaseDir, 'MyPacksPro.zxp'));
+  fs.copyFileSync(zxpOutput, path.join(releaseDir, 'MyPacksPro.zip'));
 
   if (fs.existsSync(siteDir)) {
     fs.copyFileSync(zxpOutput, path.join(siteDir, 'MyPacksPro.zxp'));
+    fs.copyFileSync(zxpOutput, path.join(siteDir, 'MyPacksPro.zip'));
   }
 
   const sizeKb = (fs.statSync(zxpOutput).size / 1024).toFixed(1);
-  console.log(`✅ MyPacksPro.zxp criado e sincronizado com sucesso! (${sizeKb} KB)`);
+  console.log(`✅ MyPacksPro.zxp e MyPacksPro.zip criados e sincronizados com sucesso! (${sizeKb} KB)`);
 } catch (err) {
-  console.error('❌ Erro ao criar ZXP:', err.message);
+  console.error('❌ Erro ao criar pacotes ZXP/ZIP:', err.message);
 }

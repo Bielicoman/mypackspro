@@ -8,10 +8,8 @@
   "zipUrl": "https://github.com/Bielicoman/mypackspro/archive/refs/heads/main.zip",
   "mandatory": false,
   "changelog": [
-    "Linha do tempo interativa com hover scrub skimming estilo Premiere e Final Cut",
-    "Novo design moderno 3D glassmorphic inspirado na Apple e Final Cut Pro",
-    "Bordas arredondadas nos previews e navegação tátil por pastas",
-    "Compatibilidade estendida do Adobe Premiere Pro 2020 ao 2026+"
+    "Sistema de atualização automática no painel",
+    "Atualização de downloads ZXP e ZIP no site"
   ],
   "fullName": "My Packs Pro 0.2.0"
 }

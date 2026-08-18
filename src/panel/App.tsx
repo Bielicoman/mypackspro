@@ -25,6 +25,8 @@ import { AssetCell } from './components/AssetCell.js';
 import { ProgressBanner } from './components/ProgressBanner.js';
 import { IconGear, IconGrip, IconPause, IconPlay, IconPlus, IconSort } from './components/Icon.js';
 import { DEFAULT_SETTINGS, Settings, type PanelSettings } from './components/Settings.js';
+import { UpdateModal } from './components/UpdateModal.js';
+import { checkRemoteUpdate, CURRENT_VERSION, type UpdateInfo } from './services/updater.js';
 import { ContextMenu, type MenuState } from './components/ContextMenu.js';
 import { pickFolder } from './bridge/index.js';
 import { copyText } from './clipboard.js';
@@ -73,10 +75,46 @@ export function App() {
   /** Categoria a editar destino, ou null. */
   const [editingRule, setEditingRule] = useState<readonly string[] | null>(null);
 
+  const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
+
   const say = useCallback((msg: string, ms = 1800) => {
     setToast(msg);
     window.setTimeout(() => setToast(null), ms);
   }, []);
+
+  const handleCheckUpdate = useCallback(
+    (manual = false) => {
+      if (manual) setCheckingUpdate(true);
+      void checkRemoteUpdate()
+        .then((info) => {
+          setUpdateInfo(info);
+          if (manual) {
+            setCheckingUpdate(false);
+            if (info.hasUpdate) {
+              setShowUpdateModal(true);
+            } else {
+              say('O My Packs Pro está na versão mais recente!');
+            }
+          }
+        })
+        .catch(() => {
+          if (manual) {
+            setCheckingUpdate(false);
+            say('Não foi possível verificar atualizações no momento.');
+          }
+        });
+    },
+    [say],
+  );
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleCheckUpdate(false);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, [handleCheckUpdate]);
 
   /**
    * O arrasto saiu do painel?
@@ -578,8 +616,40 @@ export function App() {
         <div className="grid-wrap">
           {!loading && pack !== undefined ? (
             <div className="gridbar">
-              <span className="gridbar__title">
+              <span className="gridbar__title" style={{ display: 'inline-flex', alignItems: 'center' }}>
                 {heading} · {visible.length}
+                {updateInfo?.hasUpdate ? (
+                  <button
+                    className="btn-update-pill"
+                    onClick={() => setShowUpdateModal(true)}
+                    title="Nova versão do My Packs Pro disponível!"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 5,
+                      padding: '2px 8px',
+                      background: 'rgba(59, 130, 246, 0.15)',
+                      border: '1px solid rgba(59, 130, 246, 0.3)',
+                      borderRadius: 12,
+                      color: '#60a5fa',
+                      fontSize: 11,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      marginLeft: 8,
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: '50%',
+                        background: '#3b82f6',
+                        boxShadow: '0 0 6px #3b82f6',
+                      }}
+                    />
+                    v{updateInfo.latestVersion}
+                  </button>
+                ) : null}
               </span>
               <button className="gridbar__sort" onClick={openSortMenu} title="Classificar e filtrar">
                 <IconSort /> Classificar
@@ -621,6 +691,9 @@ export function App() {
           settings={settings}
           onChange={setSettings}
           onClose={() => setShowSettings(false)}
+          currentVersion={CURRENT_VERSION}
+          onCheckUpdate={() => handleCheckUpdate(true)}
+          checkingUpdate={checkingUpdate}
           cacheInfo="Os previews ficam em %APPDATA%\MyPacksPro\cache e são reaproveitados entre sessões."
           onPickCopyFolder={() => {
             void pickFolder().then((dir) => {
@@ -632,6 +705,10 @@ export function App() {
             setShowSettings(false);
           }}
         />
+      ) : null}
+
+      {showUpdateModal && updateInfo ? (
+        <UpdateModal info={updateInfo} onClose={() => setShowUpdateModal(false)} />
       ) : null}
 
       {editingRule !== null && pack !== undefined ? (
