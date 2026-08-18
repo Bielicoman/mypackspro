@@ -2,14 +2,15 @@
   "pluginId": "com.alexascencio.mypackspro",
   "name": "My Packs Pro",
   "version": "0.2.0",
-  "minPremiereVersion": "2024",
+  "type": "CEP",
+  "host": "PPRO",
+  "hostVersionMin": "18.0",
+  "author": "Alex Ascencio",
   "releaseDate": "2026-08-18",
   "downloadUrl": "https://github.com/Bielicoman/mypackspro/releases/latest/download/MyPacksPro.zxp",
   "zipUrl": "https://github.com/Bielicoman/mypackspro/archive/refs/heads/main.zip",
-  "mandatory": false,
-  "changelog": [
-    "Sistema de atualização automática no painel",
-    "Atualização de downloads ZXP e ZIP no site"
-  ],
-  "fullName": "My Packs Pro 0.2.0"
+  "changelog": {
+    "0.2.0": "Novo design do site — tema dourado editorial + atualização automática de packs",
+    "0.1.0": "Lançamento inicial — suporte a LUTs, presets e templates"
+  }
 }
