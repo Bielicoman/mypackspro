@@ -87,11 +87,14 @@ export function usePacks(): PacksApi {
     };
   }, [scanRef]);
 
+  const normKey = (p: string) => p.replace(/[\\/]+$/, '').replace(/\\/g, '/').toLowerCase();
+
   const addFolder = useCallback(async () => {
     const rootPath = await bridge.pickFolder();
     if (rootPath === null) return;
 
-    if (refs.some((r) => r.rootPath.toLowerCase() === rootPath.toLowerCase())) {
+    const norm = normKey(rootPath);
+    if (refs.some((r) => normKey(r.rootPath) === norm)) {
       setNotice('Essa pasta já foi importada.');
       return;
     }
@@ -108,9 +111,10 @@ export function usePacks(): PacksApi {
 
   const removePack = useCallback(
     async (rootPath: string) => {
-      const nextRefs = refs.filter((r) => r.rootPath !== rootPath);
+      const norm = normKey(rootPath);
+      const nextRefs = refs.filter((r) => normKey(r.rootPath) !== norm);
       setRefs(nextRefs);
-      setPacks((prev) => prev.filter((p) => p.rootPath !== rootPath));
+      setPacks((prev) => prev.filter((p) => normKey(p.rootPath) !== norm));
       await bridge.saveRefs(nextRefs);
     },
     [refs],
@@ -118,11 +122,12 @@ export function usePacks(): PacksApi {
 
   const rescan = useCallback(
     async (rootPath: string) => {
-      const ref = refs.find((r) => r.rootPath === rootPath);
+      const norm = normKey(rootPath);
+      const ref = refs.find((r) => normKey(r.rootPath) === norm);
       if (ref === undefined) return;
       const pack = await scanRef(ref);
       if (pack === null) return;
-      setPacks((prev) => prev.map((p) => (p.rootPath === rootPath ? pack : p)));
+      setPacks((prev) => prev.map((p) => (normKey(p.rootPath) === norm ? pack : p)));
     },
     [refs, scanRef],
   );

@@ -32,6 +32,22 @@ export function compareVersions(vA: string, vB: string): number {
   return 0;
 }
 
+/**
+ * O changelog pode vir como objeto {versao: texto}, array ou string.
+ * Devolve sempre uma lista, da versao mais nova para a mais velha.
+ */
+export function normalizeChangelog(cl: unknown): string[] {
+  if (!cl) return [];
+  if (typeof cl === 'string') return [cl];
+  if (Array.isArray(cl)) return cl.filter(Boolean).map(String);
+  if (typeof cl === 'object') {
+    return Object.keys(cl as Record<string, string>)
+      .sort((a, b) => compareVersions(b, a))
+      .map((k) => `v${k} — ${(cl as Record<string, string>)[k]}`);
+  }
+  return [];
+}
+
 export function openExternalUrl(url: string): void {
   const w = window as any;
   if (w.cep && w.cep.util && typeof w.cep.util.openURLInDefaultBrowser === 'function') {
@@ -39,7 +55,7 @@ export function openExternalUrl(url: string): void {
   } else if (typeof w.require === 'function') {
     try {
       const cp = w.require('child_process');
-      const startCmd = process.platform === 'darwin' ? 'open' : 'start';
+      const startCmd = /mac|darwin/i.test(navigator.platform) ? 'open' : 'start';
       cp.exec(`${startCmd} "" "${url}"`);
     } catch {
       window.open(url, '_blank');
@@ -58,7 +74,29 @@ export async function checkRemoteUpdate(): Promise<UpdateInfo> {
     try {
       const fs = w.require('fs');
       const path = w.require('path');
-      const verPath = path.join(w.__dirname || '', 'version.json');
+      // __dirname nao existe em window. O caminho certo vem do CSInterface.
+      let root = '';
+      try {
+        if (typeof (w as any).CSInterface === 'function') {
+          root = new (w as any).CSInterface().getSystemPath('extension') || '';
+        }
+      } catch {
+        /* segue para o plano B */
+      }
+      if (!root) {
+        // plano B: sobe a partir da URL do painel ate achar CSXS/manifest.xml
+        let dir = decodeURIComponent(window.location.href)
+          .replace(/^file:\/{2,}/, '')
+          .replace(/\/[^/]*$/, '');
+        if (/^\/[A-Za-z]:/.test(dir)) dir = dir.slice(1);
+        for (let i = 0; i < 4; i++) {
+          if (fs.existsSync(path.join(dir, 'CSXS', 'manifest.xml'))) { root = dir; break; }
+          const up = path.dirname(dir);
+          if (up === dir) break;
+          dir = up;
+        }
+      }
+      const verPath = path.join(root, 'version.json');
       if (fs.existsSync(verPath)) {
         const localData = JSON.parse(fs.readFileSync(verPath, 'utf8'));
         if (localData && localData.version) {
@@ -93,7 +131,7 @@ export async function checkRemoteUpdate(): Promise<UpdateInfo> {
       currentVersion: localVersion,
       latestVersion,
       releaseDate: data.releaseDate,
-      changelog: Array.isArray(data.changelog) ? data.changelog : [],
+      changelog: normalizeChangelog(data.changelog),
       downloadUrl: data.downloadUrl || FALLBACK_DOWNLOAD_URL,
     };
   } catch (err) {

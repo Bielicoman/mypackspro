@@ -26,20 +26,33 @@ function storePath(): string {
   return path().join(dataDir(), FILE_NAME);
 }
 
+function normalizePathKey(p: string): string {
+  return p.replace(/[\\/]+$/, '').replace(/\\/g, '/').toLowerCase();
+}
+
 export async function loadPackRefs(): Promise<PackRef[]> {
   try {
     const raw = await fsp().readFile(storePath(), 'utf8');
     const parsed = JSON.parse(raw) as Partial<StoreFile>;
     if (parsed.version !== 1 || !Array.isArray(parsed.packs)) return [];
 
-    // Filtra entradas corrompidas em vez de rejeitar o arquivo inteiro:
-    // um pack malformado não deve apagar os outros.
-    return parsed.packs.filter(
-      (p): p is PackRef =>
+    const seen = new Set<string>();
+    const valid: PackRef[] = [];
+
+    for (const p of parsed.packs) {
+      if (
         typeof p?.rootPath === 'string' &&
-        p.rootPath.length > 0 &&
-        typeof p.name === 'string',
-    );
+        p.rootPath.trim().length > 0 &&
+        typeof p.name === 'string'
+      ) {
+        const key = normalizePathKey(p.rootPath);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        valid.push(p);
+      }
+    }
+
+    return valid;
   } catch {
     // Primeiro arranque, ou arquivo ilegível: começa vazio.
     return [];
@@ -49,6 +62,16 @@ export async function loadPackRefs(): Promise<PackRef[]> {
 export async function savePackRefs(packs: readonly PackRef[]): Promise<void> {
   const fs = fsp();
   await fs.mkdir(dataDir(), { recursive: true });
-  const payload: StoreFile = { version: 1, packs: [...packs] };
+
+  const seen = new Set<string>();
+  const uniquePacks: PackRef[] = [];
+  for (const p of packs) {
+    const key = normalizePathKey(p.rootPath);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    uniquePacks.push(p);
+  }
+
+  const payload: StoreFile = { version: 1, packs: uniquePacks };
   await fs.writeFile(storePath(), JSON.stringify(payload, null, 2), 'utf8');
 }

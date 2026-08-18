@@ -60,6 +60,8 @@ export async function scanFolder(root: string, opts: ScanOptions = {}): Promise<
   const isAborted = (): boolean => opts.signal?.aborted === true;
 
   const files: ScannedFile[] = [];
+  const seenRel = new Set<string>();
+  const visitedDirs = new Set<string>();
   let truncated = false;
   let dirsVisited = 0;
   let sinceYield = 0;
@@ -70,6 +72,10 @@ export async function scanFolder(root: string, opts: ScanOptions = {}): Promise<
       truncated = true;
       return;
     }
+
+    const normDir = absDir.replace(/[\\/]+$/, '').toLowerCase();
+    if (visitedDirs.has(normDir)) return;
+    visitedDirs.add(normDir);
 
     dirsVisited++;
     let entries;
@@ -108,6 +114,11 @@ export async function scanFolder(root: string, opts: ScanOptions = {}): Promise<
         return;
       }
 
+      const relPath = [...relParts, name].join('/');
+      const relKey = relPath.toLowerCase();
+      if (seenRel.has(relKey)) continue;
+      seenRel.add(relKey);
+
       const abs = p.join(absDir, name);
       let size = 0;
       let mtimeMs = 0;
@@ -120,7 +131,7 @@ export async function scanFolder(root: string, opts: ScanOptions = {}): Promise<
       }
 
       files.push({
-        relPath: [...relParts, name].join('/'),
+        relPath,
         sizeBytes: size,
         mtimeMs,
       });

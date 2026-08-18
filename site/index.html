@@ -1,783 +1,1055 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Packs Pro — Gestão de Assets e Packs no Premiere Pro</title>
-  <meta name="description" content="Biblioteca visual de assets locais para o Premiere Pro. Organize, pré-visualize e aplique LUTs, presets, templates MOGRT, overlays e Sound FX em 1 clique.">
-  <meta name="author" content="Alex Ascencio">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="My Packs Pro — Plugin para Adobe Premiere Pro">
-  <meta property="og:description" content="Sua biblioteca de packs dentro do Premiere Pro com preview em tempo real e aplicação instantânea.">
-  <meta name="theme-color" content="#0a0802">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Packs Pro — Seu acervo, dentro do Premiere</title>
+<meta name="description" content="Biblioteca de assets para Adobe Premiere Pro. Aponte para uma pasta e tenha SFX, overlays e trilhas numa grade com preview.">
+<meta name="author" content="Alex Ascencio">
+<meta name="theme-color" content="#14110E">
+<meta property="og:title" content="My Packs Pro — Seu acervo, dentro do Premiere">
+<meta property="og:description" content="Aponte para uma pasta. Seus packs viram uma grade com preview.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500&family=Work+Sans:wght@300;400;500;600&family=Zilla+Slab:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   MY PACKS PRO — "Acervo"
+   Catalogo de estudio. Carvao quente, latao, papel creme.
+   Alex Ascencio
+   ═══════════════════════════════════════════════════════════ */
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+:root{
+  --coal:#14110E;
+  --coal-2:#1B1713;
+  --shelf:#221D17;
+  --shelf-2:#2C251D;
+  --edge:rgba(240,233,220,.085);
+  --edge-2:rgba(240,233,220,.17);
+  --paper:#F0E9DC;
+  --dim:#9A8F7E;
+  --dim-2:#6A6155;
+  --brass:#D9A441;
+  --brass-d:#8F6A1E;
+  --ok:#7FB069;
+  --slab:'Zilla Slab',Georgia,serif;
+  --sans:'Work Sans',system-ui,sans-serif;
+  --mono:'Azeret Mono',ui-monospace,monospace;
+  --ease:cubic-bezier(.22,.85,.25,1);
+}
 
-  <style>
-    /* ═════════════════════════════════════════════════════════════════════
-       MY PACKS PRO — Design System
-       Estética: Editorial de Luxo · Dourado Champagne · Preto Obsidiana
-       Autor: Alex Ascencio
-       ═════════════════════════════════════════════════════════════════════ */
-    :root {
-      --bg: #080602;
-      --bg-card: #100d05;
-      --bg-card-hover: #171308;
-      --bg-panel: #0d0a03;
-      --border: rgba(245, 158, 11, 0.18);
-      --border-bright: rgba(245, 158, 11, 0.45);
-      --border-subtle: rgba(255, 255, 255, 0.06);
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--coal);color:var(--paper);font-family:var(--sans);
+  font-size:16px;line-height:1.6;font-weight:300;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(78% 46% at 14% -8%,rgba(217,164,65,.11),transparent 60%),
+    radial-gradient(60% 40% at 92% 12%,rgba(217,164,65,.055),transparent 58%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:997;opacity:.06;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+main,nav,footer{position:relative;z-index:1}
+::selection{background:var(--brass);color:#140F04}
 
-      --gold: #f59e0b;
-      --gold-light: #fbbf24;
-      --gold-glow: rgba(245, 158, 11, 0.3);
-      --amber: #d97706;
+.wrap{max-width:1260px;margin:0 auto;padding:0 34px}
+@media(max-width:640px){.wrap{padding:0 20px}}
 
-      --text: #f9f5ea;
-      --text-muted: #b8a67c;
-      --text-dim: #635438;
+/* ═════ NAV ═════ */
+nav{
+  position:sticky;top:0;z-index:100;background:rgba(20,17,14,.84);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--edge);
+}
+.nav-in{max-width:1260px;margin:0 auto;padding:0 34px;height:62px;display:flex;align-items:center;gap:28px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--paper)}
+.brand-txt{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase}
+.brand-txt i{color:var(--dim-2);font-style:normal}
+.nav-links{display:flex;gap:26px;margin-left:auto}
+.nav-links a{font-size:13.5px;color:var(--dim);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--paper)}
+.nav-dl{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;
+  background:var(--brass);color:#140F04;text-decoration:none;padding:10px 16px;transition:filter .2s;
+}
+.nav-dl:hover{filter:brightness(1.12)}
+@media(max-width:880px){.nav-links{display:none}.nav-in{padding:0 20px}.nav-dl{margin-left:auto}}
 
-      --font-display: 'Cormorant Garamond', serif;
-      --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
+/* ═════ HERO ═════ */
+header{padding:92px 0 78px}
+.tagrow{display:flex;align-items:center;gap:12px;margin-bottom:28px;flex-wrap:wrap}
+.kicker{
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass);
+}
+.beta{
+  font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  border:1px solid var(--brass-d);color:var(--brass);padding:3px 8px;
+}
+h1{
+  font-family:var(--slab);font-weight:700;font-size:clamp(52px,8.6vw,116px);
+  line-height:.92;letter-spacing:-.035em;margin-bottom:24px;
+}
+h1 em{font-style:italic;font-weight:400;color:var(--brass)}
 
-      --r-sm: 4px;
-      --r-md: 8px;
-      --r-lg: 16px;
-      --r-xl: 22px;
-    }
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:58px;align-items:end}
+@media(max-width:940px){.hero-grid{grid-template-columns:1fr;gap:42px}}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-main);
-      line-height: 1.5;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { text-decoration: none; color: inherit; }
-    button { font-family: inherit; border: none; cursor: pointer; background: none; }
+.lede{font-size:19px;color:var(--dim);max-width:37ch;margin-bottom:32px}
+.lede b{color:var(--paper);font-weight:500}
 
-    /* Light rays background */
-    .bg-light-ray {
-      position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
-      width: 1000px; height: 600px; border-radius: 50%;
-      background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
-      filter: blur(100px); pointer-events: none; z-index: 0;
-    }
+.cards{display:flex;gap:1px;background:var(--edge);border:1px solid var(--edge);margin-bottom:32px;flex-wrap:wrap}
+.card{flex:1;min-width:92px;background:var(--coal-2);padding:13px 15px}
+.card-k{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim-2);display:block;margin-bottom:5px}
+.card-v{font-family:var(--mono);font-size:14px;color:var(--paper)}
 
-    .container {
-      max-width: 1140px; margin: 0 auto; padding: 0 24px;
-      position: relative; z-index: 1;
-    }
+.cta-row{display:flex;gap:11px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;text-decoration:none;cursor:pointer;
+  font-family:var(--mono);font-size:11px;letter-spacing:.11em;text-transform:uppercase;
+  padding:15px 24px;border:1px solid var(--edge-2);color:var(--paper);background:transparent;
+  transition:background .22s var(--ease),color .22s var(--ease),border-color .22s var(--ease);
+}
+.btn:hover{background:var(--paper);color:var(--coal);border-color:var(--paper)}
+.btn-hot{background:var(--brass);border-color:var(--brass);color:#140F04;font-weight:500}
+.btn-hot:hover{background:#EDBB5E;border-color:#EDBB5E;color:#140F04}
 
-    /* ─── Header ─────────────────────────────────────────── */
-    .header {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      padding: 16px 0;
-      transition: all 0.3s ease;
-    }
-    .header.scrolled {
-      background: rgba(8, 6, 2, 0.92);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 0;
-    }
-    .header-inner {
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .brand {
-      display: flex; align-items: center; gap: 12px;
-    }
-    .brand-crest {
-      width: 32px; height: 32px; border: 1px solid var(--gold);
-      border-radius: var(--r-sm);
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(245, 158, 11, 0.08);
-      color: var(--gold-light);
-    }
-    .brand-name {
-      font-family: var(--font-display); font-size: 22px; font-weight: 700;
-      letter-spacing: 0.02em;
-    }
-    .brand-name em { font-style: italic; color: var(--gold-light); font-weight: 400; }
-    .brand-badge {
-      font-size: 10px; font-family: var(--font-mono);
-      padding: 2px 8px; border-radius: var(--r-sm);
-      background: rgba(245, 158, 11, 0.08);
-      border: 1px solid var(--border);
-      color: var(--gold-light);
-    }
+/* prateleira do hero */
+.shelf{border:1px solid var(--edge);background:var(--coal-2);padding:14px}
+.shelf-h{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim-2);
+}
+.shelf-h b{color:var(--brass);font-weight:500}
+.shelf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.shelf-cell{aspect-ratio:16/10;background:#000;border:1px solid var(--edge);overflow:hidden;position:relative}
+.shelf-cell canvas{width:100%;height:100%;display:block}
+.shelf-foot{
+  margin-top:12px;padding-top:12px;border-top:1px solid var(--edge);
+  font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim-2);
+  display:flex;justify-content:space-between;
+}
+.shelf-foot b{color:var(--paper);font-weight:500}
 
-    .nav { display: flex; align-items: center; gap: 28px; }
-    .nav a {
-      font-size: 14px; font-weight: 500; color: var(--text-muted);
-      transition: color 0.2s;
-    }
-    .nav a:hover { color: var(--text); }
+/* ═════ SEÇÕES ═════ */
+section{padding:100px 0;border-top:1px solid var(--edge)}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:40px}
+.sec-n{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--brass)}
+.sec-t{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.sec-rule{flex:1;height:1px;background:linear-gradient(90deg,var(--edge),transparent)}
+h2{font-family:var(--slab);font-weight:700;font-size:clamp(34px,5.2vw,58px);line-height:1;letter-spacing:-.03em;margin-bottom:16px}
+h2 em{font-style:italic;font-weight:400;color:var(--brass)}
+.sec-lede{font-size:17px;color:var(--dim);max-width:52ch;margin-bottom:42px}
 
-    .header-btn {
-      font-size: 13px; font-weight: 600;
-      padding: 8px 18px; border-radius: var(--r-sm);
-      background: var(--gold); color: #080602;
-      box-shadow: 0 0 20px var(--gold-glow);
-      display: inline-flex; align-items: center; gap: 8px;
-      transition: all 0.2s;
-    }
-    .header-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+/* ═════ PAINEL ═════ */
+.pnl{border:1px solid var(--edge);background:var(--coal-2);display:grid;grid-template-columns:212px 1fr 268px}
+@media(max-width:1100px){.pnl{grid-template-columns:186px 1fr}}
+@media(max-width:760px){.pnl{grid-template-columns:1fr}}
 
-    /* ─── Hero ───────────────────────────────────────────── */
-    .hero {
-      padding: 150px 0 70px;
-      text-align: center;
-    }
-    .hero-tag {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 5px 16px; border-radius: 999px;
-      background: rgba(245, 158, 11, 0.08);
-      border: 1px solid var(--border);
-      font-size: 11px; font-family: var(--font-mono);
-      color: var(--gold-light);
-      margin-bottom: 24px;
-    }
-    .hero-tag .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--gold); box-shadow: 0 0 8px var(--gold);
-    }
-    .hero-title {
-      font-family: var(--font-display);
-      font-size: clamp(48px, 8vw, 92px);
-      font-weight: 700;
-      line-height: 0.95;
-      letter-spacing: -0.01em;
-      margin-bottom: 24px;
-      max-width: 900px;
-      margin-left: auto; margin-right: auto;
-    }
-    .hero-title em { font-style: italic; color: var(--gold-light); font-weight: 400; }
-    .hero-sub {
-      font-size: clamp(16px, 2vw, 20px);
-      color: var(--text-muted);
-      max-width: 580px;
-      margin: 0 auto 36px;
-      font-weight: 300;
-      line-height: 1.6;
-    }
-    .hero-ctas {
-      display: flex; align-items: center; justify-content: center; gap: 16px;
-      margin-bottom: 50px;
-    }
-    .btn-main {
-      font-size: 14px; font-weight: 700;
-      padding: 13px 26px; border-radius: var(--r-sm);
-      background: var(--gold); color: #080602;
-      box-shadow: 0 0 25px var(--gold-glow);
-      display: inline-flex; align-items: center; gap: 8px;
-      transition: all 0.2s;
-    }
-    .btn-main:hover { background: var(--gold-light); transform: translateY(-2px); }
-    .btn-outline {
-      font-size: 14px; font-weight: 600;
-      padding: 13px 24px; border-radius: var(--r-sm);
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-subtle);
-      color: var(--text);
-      display: inline-flex; align-items: center; gap: 8px;
-      transition: all 0.2s;
-    }
-    .btn-outline:hover { border-color: var(--border); background: rgba(245, 158, 11, 0.05); }
+.pnl-side{border-right:1px solid var(--edge);display:flex;flex-direction:column}
+.pnl-main{min-width:0;display:flex;flex-direction:column}
+.pnl-aside{border-left:1px solid var(--edge);display:flex;flex-direction:column}
+@media(max-width:1100px){.pnl-aside{grid-column:1/-1;border-left:0;border-top:1px solid var(--edge)}}
+@media(max-width:760px){.pnl-side{border-right:0;border-bottom:1px solid var(--edge)}}
 
-    /* ─── Simulador Pack Explorer ────────────────────────── */
-    .pack-explorer-wrap {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--r-xl);
-      padding: 24px;
-      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85);
-      margin-bottom: 90px;
-      text-align: left;
-    }
-    .pe-header {
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 16px; margin-bottom: 20px;
-      flex-wrap: wrap; gap: 12px;
-    }
-    .pe-search-box {
-      display: flex; align-items: center; gap: 10px;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--r-sm);
-      padding: 8px 14px; width: 280px;
-    }
-    .pe-search-input {
-      background: none; border: none; outline: none;
-      font-size: 12px; font-family: var(--font-mono); color: var(--text);
-      width: 100%;
-    }
-    .pe-search-input::placeholder { color: var(--text-dim); }
+.pnl-bar{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--edge);
+  background:var(--shelf);font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--dim-2);
+}
+.pnl-bar b{color:var(--paper);font-weight:500;letter-spacing:.06em}
+.pnl-bar .plus{
+  margin-left:auto;width:19px;height:19px;border:1px solid var(--edge-2);color:var(--dim);
+  display:grid;place-items:center;font-size:13px;line-height:1;cursor:default;
+}
 
-    .pe-filter-tabs {
-      display: flex; gap: 6px; flex-wrap: wrap;
-    }
-    .pe-tab {
-      padding: 6px 14px; border-radius: var(--r-sm);
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted); font-size: 12px; font-weight: 500;
-      transition: all 0.15s;
-    }
-    .pe-tab.active, .pe-tab:hover {
-      background: rgba(245, 158, 11, 0.12);
-      border-color: var(--gold);
-      color: var(--text);
-    }
+/* categorias */
+.cats{padding:8px 0;flex:1;overflow:auto;max-height:430px}
+.cat{
+  display:flex;align-items:center;gap:9px;padding:7px 14px;cursor:pointer;
+  font-size:13.5px;color:var(--dim);transition:background .15s,color .15s;position:relative;
+}
+.cat:hover{background:var(--shelf);color:var(--paper)}
+.cat[aria-pressed="true"]{background:var(--shelf-2);color:var(--paper)}
+.cat[aria-pressed="true"]::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--brass)}
+.cat.sub{padding-left:30px;font-size:12.5px}
+.cat-ico{width:13px;flex-shrink:0;color:var(--dim-2)}
+.cat[aria-pressed="true"] .cat-ico{color:var(--brass)}
+.cat-n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cat-c{font-family:var(--mono);font-size:9.5px;color:var(--dim-2)}
+.cat-dot{width:6px;height:6px;border-radius:1px;flex-shrink:0}
 
-    /* Grid de Packs */
-    .pe-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-      margin-bottom: 20px;
-    }
-    .pe-card {
-      background: var(--bg-panel);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--r-md);
-      overflow: hidden;
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-    .pe-card:hover {
-      border-color: var(--gold); transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    }
-    .pe-card-thumb {
-      height: 110px; position: relative;
-      display: flex; align-items: center; justify-content: center;
-      background-size: cover; background-position: center;
-    }
-    .pe-card-badge {
-      position: absolute; top: 8px; left: 8px;
-      font-size: 9px; font-family: var(--font-mono); font-weight: 700;
-      padding: 2px 6px; border-radius: var(--r-sm);
-      background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
-      color: var(--gold-light); border: 1px solid var(--border);
-    }
-    .pe-card-body {
-      padding: 12px;
-    }
-    .pe-card-title {
-      font-size: 13px; font-weight: 600; margin-bottom: 2px;
-    }
-    .pe-card-meta {
-      font-size: 11px; font-family: var(--font-mono); color: var(--text-muted);
-    }
+.cats-note{
+  padding:10px 14px;border-top:1px solid var(--edge);
+  font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim-2);line-height:1.7;
+}
+.cats-note b{color:var(--brass);font-weight:500}
 
-    .pe-footer {
-      display: flex; align-items: center; justify-content: space-between;
-      border-top: 1px solid var(--border-subtle);
-      padding-top: 16px; font-size: 12px; font-family: var(--font-mono);
-      color: var(--text-muted);
-    }
-    .pe-apply-btn {
-      padding: 8px 18px; border-radius: var(--r-sm);
-      background: var(--gold); color: #080602; font-weight: 700; font-size: 12px;
-      transition: all 0.2s;
-    }
-    .pe-apply-btn:hover { background: var(--gold-light); }
+/* grade */
+.grid-wrap{flex:1;padding:12px;overflow:auto;max-height:472px;min-height:320px}
+.grid{display:grid;gap:8px}
+.tile{
+  position:relative;border:1px solid var(--edge);background:#000;overflow:hidden;cursor:pointer;
+  aspect-ratio:16/10;transition:border-color .16s,transform .16s var(--ease);
+}
+.tile:hover{border-color:var(--brass);transform:translateY(-2px)}
+.tile.picked{border-color:var(--brass);box-shadow:0 0 0 1px var(--brass)}
+.tile canvas{width:100%;height:100%;display:block}
+.tile-n{
+  position:absolute;left:0;right:0;bottom:0;padding:4px 6px;
+  background:linear-gradient(0deg,rgba(0,0,0,.88),transparent);
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.03em;color:rgba(240,233,220,.94);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.tile-x{
+  position:absolute;top:4px;right:4px;font-family:var(--mono);font-size:7.5px;letter-spacing:.08em;
+  background:rgba(0,0,0,.66);color:var(--brass);padding:2px 4px;text-transform:uppercase;
+}
+.tile-lbl{position:absolute;top:0;left:0;width:0;height:0;border-top:12px solid;border-right:12px solid transparent}
 
-    /* ─── Categorias de Estúdio ──────────────────────────── */
-    .section-head { text-align: center; max-width: 600px; margin: 0 auto 50px; }
-    .eyebrow {
-      font-size: 11px; font-family: var(--font-mono); font-weight: 700;
-      color: var(--gold-light); text-transform: uppercase; letter-spacing: 0.12em;
-      margin-bottom: 10px; display: block;
-    }
-    .section-title {
-      font-family: var(--font-display);
-      font-size: clamp(32px, 5vw, 52px);
-      font-weight: 700; line-height: 1.05; letter-spacing: -0.01em;
-    }
-    .section-title em { font-style: italic; color: var(--gold-light); }
+/* rodape do painel */
+.pnl-foot{
+  display:flex;align-items:center;gap:14px;padding:9px 14px;border-top:1px solid var(--edge);
+  background:var(--shelf);font-family:var(--mono);font-size:9px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--dim-2);
+}
+.pnl-foot input[type=range]{
+  -webkit-appearance:none;appearance:none;width:104px;height:1px;background:var(--edge-2);outline:none;
+}
+.pnl-foot input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:11px;height:11px;background:var(--brass);cursor:pointer;border-radius:0;
+}
+.pnl-foot input[type=range]::-moz-range-thumb{width:11px;height:11px;background:var(--brass);cursor:pointer;border:0;border-radius:0}
+.icobtn{
+  width:22px;height:22px;border:1px solid var(--edge-2);background:transparent;color:var(--dim);
+  cursor:pointer;display:grid;place-items:center;transition:all .16s;
+}
+.icobtn:hover{color:var(--paper);border-color:var(--paper)}
+.icobtn[aria-pressed="true"]{color:var(--brass);border-color:var(--brass)}
+.pnl-credit{margin-left:auto;color:var(--dim-2);letter-spacing:.13em}
+.pnl-credit b{color:var(--brass);font-weight:500}
 
-    .cat-cards {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-      margin-bottom: 90px;
-    }
-    .cat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--r-md);
-      padding: 28px 22px;
-      transition: all 0.2s;
-    }
-    .cat-card:hover {
-      border-color: var(--gold); transform: translateY(-3px);
-    }
-    .cat-icon {
-      font-size: 26px; margin-bottom: 14px;
-    }
-    .cat-card h4 {
-      font-family: var(--font-display); font-size: 20px; font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .cat-card p {
-      font-size: 13px; color: var(--text-muted); line-height: 1.6;
-      margin-bottom: 14px;
-    }
-    .cat-formats {
-      font-size: 10px; font-family: var(--font-mono); color: var(--text-dim);
-      border-top: 1px solid var(--border-subtle); padding-top: 10px;
-    }
+/* aside: inspetor + timeline */
+.blk{padding:16px 18px;border-bottom:1px solid var(--edge)}
+.blk:last-child{border-bottom:0}
+.blk-h{
+  font-family:var(--mono);font-size:9px;letter-spacing:.17em;text-transform:uppercase;color:var(--dim-2);
+  display:flex;justify-content:space-between;gap:8px;margin-bottom:12px;
+}
+.blk-h b{color:var(--brass);font-weight:500}
 
-    /* ─── Instalação ─────────────────────────────────────── */
-    .install-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--r-xl);
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      margin-bottom: 90px;
-    }
-    .install-tabs {
-      display: flex; background: rgba(0,0,0,0.4);
-      border-bottom: 1px solid var(--border-subtle);
-    }
-    .inst-tab {
-      flex: 1; padding: 18px 24px; text-align: center;
-      font-size: 14px; font-weight: 600; color: var(--text-muted);
-      border-bottom: 2px solid transparent; transition: all 0.2s;
-    }
-    .inst-tab.active {
-      color: var(--text); border-bottom-color: var(--gold);
-      background: rgba(245, 158, 11, 0.05);
-    }
-    .inst-tab-body { padding: 36px; display: none; }
-    .inst-tab-body.active { display: block; }
-    .inst-step-list { display: flex; flex-direction: column; gap: 20px; max-width: 680px; }
-    .inst-step-item { display: flex; gap: 16px; align-items: flex-start; }
-    .step-badge {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: var(--gold); color: #080602;
-      font-size: 12px; font-weight: 800; font-family: var(--font-mono);
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .step-content strong { display: block; font-size: 16px; margin-bottom: 4px; }
-    .step-content p { font-size: 14px; color: var(--text-muted); }
-    .code-box {
-      margin-top: 8px; padding: 12px 16px;
-      background: #080602; border: 1px solid var(--border-subtle);
-      border-radius: var(--r-sm);
-      font-family: var(--font-mono); font-size: 12px; color: var(--gold-light);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .btn-copy {
-      font-size: 11px; padding: 4px 10px; border-radius: var(--r-sm);
-      background: rgba(255,255,255,0.08); color: var(--text);
-    }
-    .btn-copy:hover { background: var(--gold); color: #080602; }
-    .dl-btn-cta {
-      display: inline-flex; align-items: center; gap: 8px;
-      margin-top: 10px; padding: 10px 20px; border-radius: var(--r-sm);
-      background: var(--gold); color: #080602; font-weight: 700; font-size: 13px;
-    }
+.insp-prev{aspect-ratio:16/10;background:#000;border:1px solid var(--edge);overflow:hidden;margin-bottom:11px}
+.insp-prev canvas{width:100%;height:100%;display:block}
+.insp-n{font-family:var(--slab);font-size:16px;font-weight:600;line-height:1.2;margin-bottom:8px;word-break:break-word}
+.insp-rows{display:flex;flex-direction:column;gap:5px}
+.insp-row{display:flex;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:9.5px;letter-spacing:.05em}
+.insp-row span{color:var(--dim-2);text-transform:uppercase}
+.insp-row b{color:var(--paper);font-weight:400;text-align:right}
+.insp-row b.brass{color:var(--brass)}
 
-    /* ─── Footer ─────────────────────────────────────────── */
-    .footer {
-      border-top: 1px solid var(--border-subtle);
-      padding: 40px 0;
-      font-size: 13px; color: var(--text-muted);
-    }
-    .footer-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 20px;
-    }
-    .footer-author { font-weight: 600; color: var(--text); }
-    .footer-author a { color: var(--gold-light); border-bottom: 1px solid var(--border); }
-    .footer-links { display: flex; gap: 20px; }
-    .footer-links a:hover { color: var(--text); }
+.mini-tl{border:1px solid var(--edge);background:var(--coal);overflow:hidden}
+.mtl-row{display:flex;height:24px;border-bottom:1px solid var(--edge);position:relative}
+.mtl-row:last-child{border-bottom:0}
+.mtl-h{
+  width:34px;flex-shrink:0;border-right:1px solid var(--edge);background:var(--shelf);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:8px;color:var(--dim);
+}
+.mtl-b{flex:1;position:relative;min-width:0}
+.mclip{
+  position:absolute;top:2px;bottom:2px;font-family:var(--mono);font-size:7.5px;
+  color:rgba(0,0,0,.75);padding:0 4px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;
+}
+.mclip.v{background:#5A7FA8}
+.mclip.a{background:#6E9E7C}
+.mclip.new{background:var(--brass);color:#140F04;font-weight:500;animation:pop .5s var(--ease)}
+@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:none;opacity:1}}
+.mph{position:absolute;top:0;bottom:0;width:1px;background:#E0553C;z-index:3}
+.tl-msg{
+  margin-top:9px;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim-2);line-height:1.7;
+}
+.tl-msg b{color:var(--ok);font-weight:500}
 
-    /* Responsive */
-    @media (max-width: 960px) {
-      .pe-grid { grid-template-columns: repeat(2, 1fr); }
-      .cat-cards { grid-template-columns: repeat(2, 1fr); }
-      .nav { display: none; }
-    }
-    @media (max-width: 600px) {
-      .pe-grid { grid-template-columns: 1fr; }
-      .cat-cards { grid-template-columns: 1fr; }
-      .hero-ctas { flex-direction: column; }
-      .footer-inner { flex-direction: column; text-align: center; }
-    }
-  </style>
+/* menu de contexto */
+.ctx{
+  position:fixed;z-index:200;background:var(--shelf-2);border:1px solid var(--edge-2);
+  min-width:212px;box-shadow:0 18px 44px rgba(0,0,0,.66);display:none;padding:4px 0;
+}
+.ctx.on{display:block}
+.ctx-i{
+  padding:7px 13px;font-size:12.5px;color:var(--paper);cursor:pointer;display:flex;
+  align-items:center;gap:9px;transition:background .13s;
+}
+.ctx-i:hover{background:var(--brass);color:#140F04}
+.ctx-sep{height:1px;background:var(--edge);margin:4px 0}
+.ctx-t{
+  padding:7px 13px 4px;font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim-2);
+}
+.swat{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;padding:3px 13px 9px}
+.swat button{width:100%;aspect-ratio:1;border:1px solid rgba(0,0,0,.4);cursor:pointer;padding:0;transition:transform .13s}
+.swat button:hover{transform:scale(1.22)}
+
+.hint{
+  margin-top:14px;font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--dim-2);text-align:center;
+}
+.hint b{color:var(--dim)}
+
+/* ═════ RECURSOS ═════ */
+.caps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--edge);border:1px solid var(--edge)}
+@media(max-width:900px){.caps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.caps{grid-template-columns:1fr}}
+.cap{background:var(--coal-2);padding:28px 22px 32px;position:relative;overflow:hidden;transition:background .3s}
+.cap:hover{background:var(--shelf)}
+.cap::after{
+  content:'';position:absolute;left:22px;bottom:0;width:26px;height:2px;background:var(--brass);
+  transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease);
+}
+.cap:hover::after{transform:scaleX(1)}
+.cap-n{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--dim-2);display:block;margin-bottom:18px}
+.cap h3{font-family:var(--slab);font-size:21px;font-weight:600;letter-spacing:-.01em;margin-bottom:8px;line-height:1.15}
+.cap p{font-size:14px;color:var(--dim);line-height:1.55}
+
+/* ═════ INSTALAÇÃO ═════ */
+.tabs{display:flex;gap:1px;background:var(--edge);border:1px solid var(--edge);border-bottom:0}
+.tab{
+  flex:1;padding:16px 14px;border:0;background:var(--coal-2);cursor:pointer;text-align:left;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim-2);
+  transition:background .2s,color .2s;
+}
+.tab b{display:block;font-family:var(--slab);font-size:14px;letter-spacing:0;color:var(--dim);margin-top:4px;font-weight:600;transition:color .2s}
+.tab:hover{background:var(--shelf)}
+.tab[aria-selected="true"]{background:var(--shelf-2);color:var(--brass)}
+.tab[aria-selected="true"] b{color:var(--paper)}
+@media(max-width:700px){.tabs{flex-direction:column}}
+
+.panel{border:1px solid var(--edge);background:var(--coal-2);padding:32px}
+.panel[hidden]{display:none}
+.step{display:grid;grid-template-columns:30px 1fr;gap:18px;padding:15px 0;border-bottom:1px solid rgba(240,233,220,.05)}
+.step:last-of-type{border-bottom:0}
+.step-n{font-family:var(--mono);font-size:11px;color:var(--brass);padding-top:3px}
+.step p{font-size:15px;color:var(--paper)}
+.step p b{font-weight:500}
+.step a{color:var(--brass);text-decoration:none;border-bottom:1px solid rgba(217,164,65,.3)}
+.step a:hover{border-bottom-color:var(--brass)}
+.step small{display:block;font-size:13px;color:var(--dim-2);margin-top:5px}
+
+.code{
+  display:flex;align-items:center;gap:12px;margin-top:10px;background:var(--coal);
+  border:1px solid var(--edge);padding:11px 12px 11px 14px;font-family:var(--mono);font-size:11px;
+  overflow-x:auto;color:var(--dim);
+}
+.code code{white-space:nowrap;flex:1}
+.code .tk{color:var(--brass)}
+.copy{
+  flex-shrink:0;background:transparent;border:1px solid var(--edge-2);color:var(--dim);
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;cursor:pointer;
+  transition:all .18s;
+}
+.copy:hover{color:var(--paper);border-color:var(--paper)}
+.copy.done{background:var(--ok);border-color:var(--ok);color:var(--coal)}
+.dl-row{display:flex;gap:11px;flex-wrap:wrap;margin-top:24px;padding-top:22px;border-top:1px solid var(--edge)}
+
+/* ═════ ESPECIFICAÇÕES ═════ */
+.specs{border:1px solid var(--edge)}
+.spec{display:grid;grid-template-columns:210px 1fr;gap:22px;padding:15px 24px;border-bottom:1px solid var(--edge)}
+.spec:last-child{border-bottom:0}
+.spec:nth-child(odd){background:rgba(240,233,220,.014)}
+.spec dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim-2);padding-top:3px}
+.spec dd{font-size:14.5px;color:var(--paper)}
+@media(max-width:640px){.spec{grid-template-columns:1fr;gap:5px}}
+
+/* ═════ RODAPÉ ═════ */
+footer{border-top:1px solid var(--edge);background:var(--coal-2)}
+.fgrid{display:grid;grid-template-columns:1.5fr 1fr 1fr;border-bottom:1px solid var(--edge)}
+@media(max-width:800px){.fgrid{grid-template-columns:1fr}}
+.fc{padding:30px 34px;border-right:1px solid var(--edge)}
+.fc:last-child{border-right:0}
+@media(max-width:800px){.fc{border-right:0;border-bottom:1px solid var(--edge)}}
+.fc-k{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim-2);display:block;margin-bottom:12px}
+.fc-name{font-family:var(--slab);font-size:29px;font-weight:700;letter-spacing:-.025em;line-height:1;margin-bottom:7px}
+.fc-sub{font-size:13.5px;color:var(--dim)}
+.flist{display:flex;flex-direction:column;gap:9px}
+.flist a{font-size:14px;color:var(--dim);text-decoration:none;transition:color .18s,padding-left .18s}
+.flist a:hover{color:var(--brass);padding-left:5px}
+.fbar{
+  padding:17px 34px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim-2);
+}
+.fbar b{color:var(--paper);font-weight:500}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;transition:none}
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
 </head>
 <body>
 
-<div class="bg-light-ray"></div>
-
-<!-- ─── Header ──────────────────────────────────────────────────────── -->
-<header class="header" id="header">
-  <div class="container header-inner">
-    <a href="#" class="brand">
-      <div class="brand-crest">★</div>
-      <div class="brand-name">My Packs <em>Pro</em></div>
-      <span class="brand-badge">v0.2.0 · CEP</span>
-    </a>
-
-    <nav class="nav">
-      <a href="#packs">Explorer</a>
-      <a href="#categorias">Categorias</a>
-      <a href="#instalacao">Instalação</a>
-    </nav>
-
-    <a href="#instalacao" class="header-btn">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-        <path d="M8 2v8M4 7l4 4 4-4M2 13h12"/>
+<nav>
+  <div class="nav-in">
+    <a href="../../index.html" class="brand">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <rect x="1" y="4" width="18" height="14" stroke="#F0E9DC" stroke-width="1.3"/>
+        <path d="M1 8h18" stroke="#F0E9DC" stroke-width="1.3"/>
+        <path d="M1 4l3-2h5l1.6 2" stroke="#D9A441" stroke-width="1.3" fill="none"/>
+        <rect x="5" y="11" width="4" height="4" fill="#D9A441"/>
       </svg>
-      Baixar Plugin
+      <span class="brand-txt">Ascencio <i>&#9656;</i> My Packs Pro</span>
     </a>
+    <div class="nav-links">
+      <a href="#painel">Painel</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#instalar">Instalar</a>
+    </div>
+    <a href="MyPacksPro.zxp" class="nav-dl" download>Baixar</a>
+  </div>
+</nav>
+
+<main>
+<header>
+  <div class="wrap">
+    <div class="tagrow rv">
+      <span class="kicker">Biblioteca de assets</span>
+      <span class="beta">Beta 0.2.0</span>
+    </div>
+    <h1 class="rv">Seu acervo,<br><em>dentro</em> do Premiere.</h1>
+    <div class="hero-grid">
+      <div>
+        <p class="lede rv">Aponte para uma pasta do seu PC. As <b>subpastas viram categorias</b> e tudo ganha preview.</p>
+        <div class="cards rv">
+          <div class="card"><span class="card-k">Versão</span><span class="card-v">0.2.0</span></div>
+          <div class="card"><span class="card-k">Formatos</span><span class="card-v">138</span></div>
+          <div class="card"><span class="card-k">Testado com</span><span class="card-v">2.359</span></div>
+          <div class="card"><span class="card-k">Nuvem</span><span class="card-v">Nenhuma</span></div>
+        </div>
+        <div class="cta-row rv">
+          <a href="MyPacksPro.zxp" class="btn btn-hot" download>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v8m0 0L3 5.5M6.5 9L10 5.5M1.5 11.5h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
+            Baixar .ZXP
+          </a>
+          <a href="#painel" class="btn">Abrir o painel</a>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="shelf">
+          <div class="shelf-h"><span>Prateleira · preview automático</span><b id="shelfCat">SFX</b></div>
+          <div class="shelf-grid" id="shelfGrid"></div>
+          <div class="shelf-foot"><span>Cache local</span><span>Offline <b>sempre</b></span></div>
+        </div>
+      </div>
+    </div>
   </div>
 </header>
 
-<!-- ─── Hero ────────────────────────────────────────────────────────── -->
-<section class="hero">
-  <div class="container">
-    <div class="hero-tag">
-      <span class="dot"></span>
-      Desenvolvido por Alex Ascencio · Adobe Premiere Pro
-    </div>
+<section id="painel">
+  <div class="wrap">
+    <div class="sec-head rv"><span class="sec-n">01</span><span class="sec-t">Painel</span><span class="sec-rule"></span><span class="sec-t">Simulação</span></div>
+    <h2 class="rv">A pasta vira <em>grade</em>.</h2>
+    <p class="sec-lede rv">Passe o mouse para ouvir e ver. Duplo-clique insere no playhead, numa faixa acima do que já existe. Botão direito numa categoria abre as regras de organização.</p>
 
-    <h1 class="hero-title">
-      Sua biblioteca de estúdio.<br>
-      <em>Dentro da timeline.</em>
-    </h1>
+    <div class="pnl rv">
+      <!-- categorias -->
+      <div class="pnl-side">
+        <div class="pnl-bar">Packs <span class="plus">+</span></div>
+        <div class="cats" id="cats"></div>
+        <div class="cats-note">Subpastas = categorias.<br>Regras são <b>herdadas</b>.</div>
+      </div>
 
-    <p class="hero-sub">
-      Organize, pré-visualize e aplique LUTs, Presets, Motion Titles MOGRT e Efeitos Sonoros instantaneamente no Premiere Pro.
-    </p>
-
-    <div class="hero-ctas">
-      <a href="#instalacao" class="btn-main">
-        Baixar My Packs Pro
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-          <path d="M8 2v9M4 8l4 4 4-4M2 14h12"/>
-        </svg>
-      </a>
-      <a href="#packs" class="btn-outline">
-        Explorar Biblioteca ↓
-      </a>
-    </div>
-
-    <!-- ─── Pack Explorer Interativo ─────────────────────────────────── -->
-    <div class="pack-explorer-wrap" id="packs">
-      <div class="pe-header">
-        <div class="pe-search-box">
-          <span>🔍</span>
-          <input type="text" id="packSearch" class="pe-search-input" placeholder="Filtrar por nome ou tag..." oninput="filterPacks()">
-        </div>
-
-        <div class="pe-filter-tabs">
-          <button class="pe-tab active" onclick="filterCat('all', this)">Todos</button>
-          <button class="pe-tab" onclick="filterCat('lut', this)">🎨 LUTs</button>
-          <button class="pe-tab" onclick="filterCat('preset', this)">⚡ Presets</button>
-          <button class="pe-tab" onclick="filterCat('mogrt', this)">🎬 Titles MOGRT</button>
-          <button class="pe-tab" onclick="filterCat('sfx', this)">🔊 Sound FX</button>
+      <!-- grade -->
+      <div class="pnl-main">
+        <div class="pnl-bar">Categoria <b id="catName">SFX</b> <span id="catCount" style="margin-left:auto"></span></div>
+        <div class="grid-wrap"><div class="grid" id="grid"></div></div>
+        <div class="pnl-foot">
+          <span>Tamanho</span>
+          <input type="range" id="sizeRange" min="88" max="200" value="126">
+          <button class="icobtn" id="btnPlay" aria-pressed="true" title="Pausar previews">
+            <svg width="9" height="9" viewBox="0 0 9 9" fill="currentColor"><rect x="1" y="1" width="2.6" height="7"/><rect x="5.4" y="1" width="2.6" height="7"/></svg>
+          </button>
+          <span class="pnl-credit">by <b>Alex Ascencio</b></span>
         </div>
       </div>
 
-      <div class="pe-grid" id="packGrid">
-        <!-- Pack 1 -->
-        <div class="pe-card" data-cat="lut" data-name="Hollywood Teal & Amber" onclick="previewPack('Hollywood LUT')">
-          <div class="pe-card-thumb" style="background: linear-gradient(135deg, #093a3e, #e07a1e);">
-            <span class="pe-card-badge">.CUBE</span>
-            <span style="font-size:24px;">🎨</span>
-          </div>
-          <div class="pe-card-body">
-            <div class="pe-card-title">Hollywood Teal & Amber</div>
-            <div class="pe-card-meta">24 LUTs Cinemáticos · 3D Mesh</div>
-          </div>
-        </div>
-
-        <!-- Pack 2 -->
-        <div class="pe-card" data-cat="preset" data-name="Fast Whip Transitions" onclick="previewPack('Whip Transitions')">
-          <div class="pe-card-thumb" style="background: linear-gradient(135deg, #1c1308, #b45309);">
-            <span class="pe-card-badge">.PRFPSET</span>
-            <span style="font-size:24px;">⚡</span>
-          </div>
-          <div class="pe-card-body">
-            <div class="pe-card-title">Fast Whip Transitions</div>
-            <div class="pe-card-meta">18 Transições de Câmera · Easing</div>
+      <!-- inspetor -->
+      <div class="pnl-aside">
+        <div class="blk">
+          <div class="blk-h">Asset <b id="inspKind">—</b></div>
+          <div class="insp-prev"><canvas id="inspCv" width="320" height="200"></canvas></div>
+          <div class="insp-n" id="inspName">Escolha um asset</div>
+          <div class="insp-rows">
+            <div class="insp-row"><span>Extensão</span><b id="inspExt">—</b></div>
+            <div class="insp-row"><span>Duração</span><b id="inspDur">—</b></div>
+            <div class="insp-row"><span>Tamanho</span><b id="inspSize">—</b></div>
+            <div class="insp-row"><span>Destino</span><b class="brass" id="inspDest">—</b></div>
+            <div class="insp-row"><span>Rótulo</span><b id="inspLabel">—</b></div>
           </div>
         </div>
-
-        <!-- Pack 3 -->
-        <div class="pe-card" data-cat="mogrt" data-name="Kinetic Typography Pro" onclick="previewPack('Kinetic Typography')">
-          <div class="pe-card-thumb" style="background: linear-gradient(135deg, #2a1b04, #78350f);">
-            <span class="pe-card-badge">.MOGRT</span>
-            <span style="font-size:24px;">🎬</span>
-          </div>
-          <div class="pe-card-body">
-            <div class="pe-card-title">Kinetic Typography Pro</div>
-            <div class="pe-card-meta">12 Títulos Auto-Resize · 4K</div>
-          </div>
-        </div>
-
-        <!-- Pack 4 -->
-        <div class="pe-card" data-cat="sfx" data-name="Cinema Whooshes & Risers" onclick="playSfxSim('Whoosh')">
-          <div class="pe-card-thumb" style="background: linear-gradient(135deg, #141005, #451a03);">
-            <span class="pe-card-badge">.WAV 24b</span>
-            <span style="font-size:24px;">🔊</span>
-          </div>
-          <div class="pe-card-body">
-            <div class="pe-card-title">Cinema Whooshes & Risers</div>
-            <div class="pe-card-meta">32 FX Stereo · 48kHz Master</div>
-          </div>
+        <div class="blk" style="flex:1">
+          <div class="blk-h">Sequência <b>02_TEASER</b></div>
+          <div class="mini-tl" id="miniTl"></div>
+          <div class="tl-msg" id="tlMsg">Duplo-clique num asset para inserir.</div>
         </div>
       </div>
+    </div>
+    <p class="hint">Botão direito numa <b>categoria</b> define pasta de destino e cor de rótulo</p>
+  </div>
+</section>
 
-      <div class="pe-footer">
-        <span id="packCount">Exibindo 4 pacotes de estúdio</span>
-        <button class="pe-apply-btn" id="btnDragSim" onclick="triggerDragSim()">
-          Arrastar Pack para Timeline →
-        </button>
+<!-- menu de contexto -->
+<div class="ctx" id="ctx">
+  <div class="ctx-i" id="ctxDest">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 3h3.4L5.6 4.5H11V10H1V3z" stroke="currentColor" stroke-width="1.1"/></svg>
+    Definir pasta de destino
+  </div>
+  <div class="ctx-i" id="ctxClear">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.1"/></svg>
+    Limpar regras
+  </div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-t">Rótulo no projeto</div>
+  <div class="swat" id="swat"></div>
+</div>
+
+<section id="recursos">
+  <div class="wrap">
+    <div class="sec-head rv"><span class="sec-n">02</span><span class="sec-t">Recursos</span><span class="sec-rule"></span></div>
+    <h2 class="rv">Quatro coisas.</h2>
+    <p class="sec-lede rv">Nada além disso.</p>
+    <div class="caps rv">
+      <div class="cap"><span class="cap-n">01</span><h3>Preview de tudo</h3><p>Vídeo roda sozinho. Áudio toca com waveform ao passar o mouse.</p></div>
+      <div class="cap"><span class="cap-n">02</span><h3>Nunca sobrescreve</h3><p>A inserção entra numa faixa acima, criando faixa se precisar.</p></div>
+      <div class="cap"><span class="cap-n">03</span><h3>Cópia pro projeto</h3><p>O asset vai junto do .prproj. SSD desligado não deixa offline.</p></div>
+      <div class="cap"><span class="cap-n">04</span><h3>Regra por pasta</h3><p>Destino e cor de rótulo definidos uma vez, herdados pelas subpastas.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="instalar">
+  <div class="wrap">
+    <div class="sec-head rv"><span class="sec-n">03</span><span class="sec-t">Instalação</span><span class="sec-rule"></span><span class="sec-t">3 métodos</span></div>
+    <h2 class="rv">Pronto em um minuto.</h2>
+    <p class="sec-lede rv">Escolha o caminho. Todos chegam no mesmo lugar.</p>
+
+    <div class="rv">
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" data-p="p1">Método 01<b>ZXP · recomendado</b></button>
+        <button class="tab" role="tab" aria-selected="false" data-p="p2">Método 02<b>ZIP manual</b></button>
+        <button class="tab" role="tab" aria-selected="false" data-p="p3">Método 03<b>Linha de comando</b></button>
+      </div>
+
+      <div class="panel" id="p1" role="tabpanel">
+        <div class="step"><span class="step-n">01</span><div><p>Feche o Premiere e baixe o <b>MyPacksPro.zxp</b>.</p><small>O FFmpeg já vem incluído.</small></div></div>
+        <div class="step"><span class="step-n">02</span><div><p>Abra o <a href="https://zxpinstaller.com/" target="_blank" rel="noopener">ZXP Installer</a> ou o <a href="https://install.anastasiy.com/" target="_blank" rel="noopener">Anastasiy's Extension Manager</a> e arraste o arquivo.</p></div></div>
+        <div class="step"><span class="step-n">03</span><div><p>Abra o Premiere em <b>Janela &#8594; Extensões &#8594; My Packs Pro</b> e clique em <b>+</b> para escolher sua pasta.</p></div></div>
+        <div class="dl-row"><a href="MyPacksPro.zxp" class="btn btn-hot" download>Baixar .ZXP</a></div>
+      </div>
+
+      <div class="panel" id="p2" role="tabpanel" hidden>
+        <div class="step"><span class="step-n">01</span><div><p>Baixe o <b>MyPacksPro.zip</b> e extraia.</p></div></div>
+        <div class="step"><span class="step-n">02</span><div><p>Copie a pasta <b>com.alexascencio.mypackspro</b> para a pasta de extensões:</p>
+          <div class="code"><code><span class="tk">Windows</span> &nbsp;%APPDATA%\Adobe\CEP\extensions\</code><button class="copy" data-c="%APPDATA%\Adobe\CEP\extensions\">Copiar</button></div>
+        </div></div>
+        <div class="step"><span class="step-n">03</span><div><p>Rode o comando do <b>Método 03</b> para liberar o modo desenvolvedor.</p><small>Ou use o <b>Instalar.bat</b> que vem no pacote.</small></div></div>
+        <div class="dl-row"><a href="MyPacksPro.zip" class="btn" download>Baixar .ZIP</a></div>
+      </div>
+
+      <div class="panel" id="p3" role="tabpanel" hidden>
+        <div class="step"><span class="step-n">01</span><div><p><b>Windows</b> — PowerShell</p>
+          <div class="code"><code>reg add "HKCU\Software\Adobe\CSXS.11" /v PlayerDebugMode /t REG_SZ /d 1 /f</code><button class="copy" data-c='reg add "HKCU\Software\Adobe\CSXS.11" /v PlayerDebugMode /t REG_SZ /d 1 /f'>Copiar</button></div>
+        </div></div>
+        <div class="step"><span class="step-n">02</span><div><p>Reinicie o Premiere.</p><small>Só é preciso uma vez por máquina.</small></div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── Categorias ──────────────────────────────────────────────────── -->
-<section class="section" id="categorias">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Arquitetura de Formatos</span>
-      <h2 class="section-title">Compatível com todos os <em>assets de cinema.</em></h2>
-    </div>
-
-    <div class="cat-cards">
-      <div class="cat-card">
-        <div class="cat-icon">🎨</div>
-        <h4>LUTs 3D</h4>
-        <p>Tabelas de cor 33x33x33 e 65x65x65 aplicadas instantaneamente no Lumetri.</p>
-        <div class="cat-formats">.cube · .3dl · .look</div>
-      </div>
-
-      <div class="cat-card">
-        <div class="cat-icon">⚡</div>
-        <h4>Presets Nativos</h4>
-        <p>Efeitos de animação e transform do Premiere Pro prontos para arrastar e soltar.</p>
-        <div class="cat-formats">.prfpset · native effects</div>
-      </div>
-
-      <div class="cat-card">
-        <div class="cat-icon">🎬</div>
-        <h4>Motion MOGRT</h4>
-        <p>Templates de After Effects com propriedades editáveis sem sair do Premiere.</p>
-        <div class="cat-formats">.mogrt · .aep link</div>
-      </div>
-
-      <div class="cat-card">
-        <div class="cat-icon">🔊</div>
-        <h4>Audio Master FX</h4>
-        <p>Foley, transições de áudio, impactos e ambiências com waveform visual.</p>
-        <div class="cat-formats">.wav · .mp3 · .aiff</div>
-      </div>
+<section>
+  <div class="wrap">
+    <div class="sec-head rv"><span class="sec-n">04</span><span class="sec-t">Especificações</span><span class="sec-rule"></span></div>
+    <div class="specs rv">
+      <dl>
+        <div class="spec"><dt>Formatos</dt><dd>138 extensões — vídeo, áudio, imagem, RAW, MOGRT, LUT, PSD e projetos</dd></div>
+        <div class="spec"><dt>Preview</dt><dd>Vídeo em loop na grade · áudio com waveform e agulha ao passar o mouse</dd></div>
+        <div class="spec"><dt>Inserção</dt><dd>Duplo-clique no playhead em faixa livre · arrastar leva ao painel Projeto</dd></div>
+        <div class="spec"><dt>Organização</dt><dd>Pasta de destino e rótulo de cor por categoria, herdados pelas subpastas</dd></div>
+        <div class="spec"><dt>Escala</dt><dd>Testado com 2.359 assets · previews sob demanda e em cache</dd></div>
+        <div class="spec"><dt>Privacidade</dt><dd>Nada sai da máquina. Nenhum arquivo é movido de lugar.</dd></div>
+        <div class="spec"><dt>Premiere Pro</dt><dd>24.0 ou superior · testado no 26.x · Windows</dd></div>
+        <div class="spec"><dt>Canal</dt><dd>Beta — a interface ainda pode mudar antes do 1.0.0</dd></div>
+      </dl>
     </div>
   </div>
 </section>
+</main>
 
-<!-- ─── Instalação ──────────────────────────────────────────────────── -->
-<section class="section" id="instalacao">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Download & Setup</span>
-      <h2 class="section-title">Instalação em 3 métodos.</h2>
-    </div>
-
-    <div class="install-box">
-      <div class="install-tabs">
-        <button class="inst-tab active" onclick="switchTab('zxp', this)">
-          ✨ 1-Click (.ZXP)
-        </button>
-        <button class="inst-tab" onclick="switchTab('manual', this)">
-          📁 Manual (.ZIP)
-        </button>
-        <button class="inst-tab" onclick="switchTab('github', this)">
-          🐙 GitHub
-        </button>
+<footer>
+  <div class="wrap" style="padding:0">
+    <div class="fgrid">
+      <div class="fc">
+        <span class="fc-k">Plugin</span>
+        <div class="fc-name">My Packs Pro</div>
+        <div class="fc-sub">Biblioteca de assets para Adobe Premiere Pro</div>
       </div>
-
-      <!-- ZXP -->
-      <div class="inst-tab-body active" id="tab-zxp">
-        <div class="inst-step-list">
-          <div class="inst-step-item">
-            <span class="step-badge">1</span>
-            <div class="step-content">
-              <strong>Baixe o arquivo MyPacksPro.zxp (v0.2.0)</strong>
-              <a href="MyPacksPro.zxp" download class="dl-btn-cta">
-                Download MyPacksPro.zxp
-              </a>
-            </div>
-          </div>
-          <div class="inst-step-item">
-            <span class="step-badge">2</span>
-            <div class="step-content">
-              <strong>Instale com Anastasiy Extension Manager</strong>
-              <p>Arraste o ZXP e reinicie o Premiere Pro.</p>
-            </div>
-          </div>
-          <div class="inst-step-item">
-            <span class="step-badge">3</span>
-            <div class="step-content">
-              <strong>Abra no Premiere</strong>
-              <p>Vá em <code>Janela → Extensões → My Packs Pro</code>.</p>
-            </div>
-          </div>
+      <div class="fc">
+        <span class="fc-k">Suíte</span>
+        <div class="flist">
+          <a href="../../Master%20Color/index.html">Master Color</a>
+          <a href="../../MediaDownloader/index.html">Media Downloader</a>
+          <a href="../../Safe%20Zones/index.html">Safe Zones</a>
         </div>
       </div>
-
-      <!-- Manual -->
-      <div class="inst-tab-body" id="tab-manual">
-        <div class="inst-step-list">
-          <div class="inst-step-item">
-            <span class="step-badge">1</span>
-            <div class="step-content">
-              <strong>Baixe o ZIP</strong>
-              <a href="MyPacksPro.zip" download class="dl-btn-cta">Download MyPacksPro.zip</a>
-            </div>
-          </div>
-          <div class="inst-step-item">
-            <span class="step-badge">2</span>
-            <div class="step-content">
-              <strong>Copie para a pasta de extensões</strong>
-              <div class="code-box">
-                <span id="mppCepPath">C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\</span>
-                <button class="btn-copy" onclick="copyText('mppCepPath')">Copiar</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- GitHub -->
-      <div class="inst-tab-body" id="tab-github">
-        <div class="inst-step-list">
-          <div class="inst-step-item">
-            <span class="step-badge">1</span>
-            <div class="step-content">
-              <strong>Clone o repositório</strong>
-              <div class="code-box">
-                <span id="mppGit">git clone https://github.com/Bielicoman/mypackspro.git</span>
-                <button class="btn-copy" onclick="copyText('mppGit')">Copiar</button>
-              </div>
-            </div>
-          </div>
+      <div class="fc">
+        <span class="fc-k">Downloads</span>
+        <div class="flist">
+          <a href="MyPacksPro.zxp" download>MyPacksPro.zxp</a>
+          <a href="MyPacksPro.zip" download>MyPacksPro.zip</a>
+          <a href="version.json">version.json</a>
         </div>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- ─── Footer ──────────────────────────────────────────────────────── -->
-<footer class="footer">
-  <div class="container footer-inner">
-    <div>
-      <span class="footer-author">My Packs Pro</span> · Criado por <a href="https://github.com/Bielicoman" target="_blank" rel="noopener">Alex Ascencio</a>
-    </div>
-    <div class="footer-links">
-      <a href="#packs">Explorer</a>
-      <a href="#categorias">Categorias</a>
-      <a href="#instalacao">Instalar</a>
-      <a href="https://github.com/Bielicoman/mypackspro" target="_blank" rel="noopener">GitHub</a>
+    <div class="fbar">
+      <span>Desenhado e escrito por <b>Alex Ascencio</b></span>
+      <span>v0.2.0 · Beta · MIT</span>
     </div>
   </div>
 </footer>
 
 <script>
-function filterCat(cat, el) {
-  document.querySelectorAll('.pe-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)};
 
-  const cards = document.querySelectorAll('.pe-card');
-  let count = 0;
-  cards.forEach(card => {
-    if (cat === 'all' || card.dataset.cat === cat) {
-      card.style.display = 'block';
-      count++;
-    } else {
-      card.style.display = 'none';
+/* ═══════════════ PRNG estavel ═══════════════ */
+function rng(seed){var s=seed>>>0;return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296}}
+
+/* ═══════════════ DESENHISTAS DE PREVIEW ═══════════════ */
+var PAINT={
+  /* video: vazamento de luz */
+  leak:function(c,w,h,t,r){
+    var g=c.createLinearGradient(0,0,w,h);
+    g.addColorStop(0,'#1A0E22');g.addColorStop(1,'#3B1220');c.fillStyle=g;c.fillRect(0,0,w,h);
+    var x=(Math.sin(t*.8+r)*.5+.5)*w;
+    var rg=c.createRadialGradient(x,h*.35,2,x,h*.35,w*.62);
+    rg.addColorStop(0,'rgba(255,180,80,.85)');rg.addColorStop(.4,'rgba(230,90,60,.36)');rg.addColorStop(1,'transparent');
+    c.fillStyle=rg;c.fillRect(0,0,w,h);
+  },
+  /* video: glitch */
+  glitch:function(c,w,h,t,r){
+    c.fillStyle='#07090C';c.fillRect(0,0,w,h);
+    for(var i=0;i<8;i++){
+      var y=((i*h/8)+Math.sin(t*2+i+r)*h*.06+h)%h;
+      c.fillStyle=i%2?'rgba(90,220,255,.6)':'rgba(255,60,130,.55)';
+      c.fillRect(Math.sin(t*3+i)*w*.2,y,w,h*.035);
     }
-  });
-  document.getElementById('packCount').textContent = `Exibindo ${count} pacote(s)`;
-}
+    c.fillStyle='rgba(240,233,220,.14)';c.fillRect(0,h*.48,w,1.4);
+  },
+  /* video: particulas */
+  dust:function(c,w,h,t,r){
+    c.fillStyle='#0B0F0C';c.fillRect(0,0,w,h);
+    var rg=c.createRadialGradient(w*.5,h*.5,2,w*.5,h*.5,w*.6);
+    rg.addColorStop(0,'rgba(127,176,105,.3)');rg.addColorStop(1,'transparent');
+    c.fillStyle=rg;c.fillRect(0,0,w,h);
+    var p=rng(r*1000|0);
+    for(var i=0;i<22;i++){
+      var bx=p(),by=p(),sp=.4+p();
+      var x=(bx*w+t*22*sp)%w,y=(by*h+Math.sin(t*sp+i)*h*.1+h)%h;
+      c.fillStyle='rgba(217,235,190,'+(.25+p()*.55)+')';
+      c.fillRect(x,y,1.4,1.4);
+    }
+  },
+  /* video: fumaca */
+  smoke:function(c,w,h,t,r){
+    c.fillStyle='#0A0A0C';c.fillRect(0,0,w,h);
+    for(var i=0;i<4;i++){
+      var x=w*(.2+i*.2)+Math.sin(t*.6+i+r)*w*.12;
+      var y=h*.7-((t*16+i*40)%(h*1.1));
+      var g=c.createRadialGradient(x,y,1,x,y,w*.26);
+      g.addColorStop(0,'rgba(200,205,215,.3)');g.addColorStop(1,'transparent');
+      c.fillStyle=g;c.beginPath();c.arc(x,y,w*.26,0,7);c.fill();
+    }
+  },
+  /* overlay: grain / vhs */
+  vhs:function(c,w,h,t,r){
+    c.fillStyle='#141018';c.fillRect(0,0,w,h);
+    var p=rng((t*8|0)+r*97);
+    for(var y=0;y<h;y+=2){
+      c.fillStyle='rgba(240,233,220,'+(p()*.09)+')';c.fillRect(0,y,w,1);
+    }
+    c.fillStyle='rgba(90,220,255,.2)';c.fillRect(0,(t*40)%h,w,2);
+    c.fillStyle='rgba(255,60,130,.16)';c.fillRect(0,((t*40)+h*.5)%h,w,2);
+  },
+  /* imagem estatica: LUT */
+  lut:function(c,w,h,t,r){
+    for(var i=0;i<8;i++)for(var j=0;j<5;j++){
+      c.fillStyle='hsl('+((i*40+j*17+r*60)%360)+',52%,'+(28+j*11)+'%)';
+      c.fillRect(i*w/8,j*h/5,w/8+1,h/5+1);
+    }
+    c.fillStyle='rgba(0,0,0,.34)';c.fillRect(0,h*.72,w,h*.28);
+  },
+  /* mogrt */
+  mogrt:function(c,w,h,t,r){
+    c.fillStyle='#181228';c.fillRect(0,0,w,h);
+    var k=(Math.sin(t*1.4+r)*.5+.5);
+    c.fillStyle='#D9A441';c.fillRect(w*.12,h*.42,w*.5*k+w*.1,h*.1);
+    c.fillStyle='rgba(240,233,220,.82)';c.fillRect(w*.12,h*.58,w*.34*k,h*.05);
+    c.strokeStyle='rgba(217,164,65,.4)';c.lineWidth=1;c.strokeRect(w*.08,h*.3,w*.7,h*.4);
+  }
+};
 
-function filterPacks() {
-  const q = document.getElementById('packSearch').value.toLowerCase();
-  const cards = document.querySelectorAll('.pe-card');
-  let count = 0;
-  cards.forEach(card => {
-    const match = card.dataset.name.toLowerCase().includes(q);
-    card.style.display = match ? 'block' : 'none';
-    if (match) count++;
-  });
-  document.getElementById('packCount').textContent = `Exibindo ${count} pacote(s)`;
-}
+/* ═══════════════ ACERVO ═══════════════ */
+var LABELS=[
+ ['Violeta','#A67FBF'],['Íris','#6A5ACD'],['Caribe','#4FB0C6'],['Lavanda','#C8A2C8'],
+ ['Cerúleo','#4682B4'],['Floresta','#3E8E41'],['Rosa','#E0708F'],['Manga','#E0A040'],
+ ['Púrpura','#8A5BD0'],['Azul','#4169E1'],['Verde-água','#2E8B84'],['Magenta','#C04FA8'],
+ ['Bege','#C6A87C'],['Verde','#5CA84E'],['Marrom','#8B5A2B'],['Amarelo','#D4B72E']
+];
 
-function previewPack(name) {
-  alert(`✨ Preview ativo: ${name}\nPronto para importar na timeline do Premiere.`);
-}
+function A(n,ext,kind,paint,dur,mb){return{n:n,ext:ext,kind:kind,paint:paint,dur:dur,mb:mb}}
+var CATS=[
+ {id:'sfx',n:'SFX',dest:'03 SFX',label:6,subs:[
+   {id:'whoosh',n:'Whoosh'},{id:'impact',n:'Impacto'}
+  ],assets:[
+   A('whoosh_soft_01','wav','audio',null,'0:01.4',2.1),
+   A('whoosh_metal_03','wav','audio',null,'0:00.9',1.4),
+   A('impact_sub_02','wav','audio',null,'0:02.1',3.2),
+   A('riser_long_07','wav','audio',null,'0:04.8',7.6),
+   A('click_ui_11','wav','audio',null,'0:00.3',0.4),
+   A('glass_break_04','wav','audio',null,'0:01.7',2.6),
+   A('braam_cinematic','wav','audio',null,'0:05.2',8.1),
+   A('tape_stop_02','wav','audio',null,'0:01.1',1.7)
+ ]},
+ {id:'vfx',n:'VFX',dest:'05 VFX',label:8,subs:[],assets:[
+   A('light_leak_warm','mov','video','leak','0:03.0',86),
+   A('glitch_rgb_02','mp4','video','glitch','0:02.4',42),
+   A('dust_particles','mov','video','dust','0:06.0',124),
+   A('smoke_soft_01','mov','video','smoke','0:05.0',98),
+   A('light_leak_cold','mov','video','leak','0:03.2',88),
+   A('glitch_scan_05','mp4','video','glitch','0:01.8',31)
+ ]},
+ {id:'ovl',n:'Overlays',dest:'06 OVERLAY',label:2,subs:[],assets:[
+   A('vhs_grain_4k','mp4','video','vhs','0:10.0',210),
+   A('film_burn_02','mov','video','leak','0:04.0',96),
+   A('scanlines_loop','mp4','video','vhs','0:08.0',64),
+   A('halation_soft','mov','video','smoke','0:06.0',112)
+ ]},
+ {id:'luts',n:'LUTs',dest:'08 LUT',label:13,subs:[],assets:[
+   A('kodak_2383','cube','lut','lut','—',0.9),
+   A('teal_orange_v4','cube','lut','lut','—',0.9),
+   A('bleach_bypass','cube','lut','lut','—',0.9),
+   A('night_blue','cube','lut','lut','—',0.9),
+   A('portra_400','cube','lut','lut','—',0.9)
+ ]},
+ {id:'mogrt',n:'MOGRT',dest:'07 TITULOS',label:0,subs:[],assets:[
+   A('lower_third_bold','mogrt','mogrt','mogrt','0:05.0',3.4),
+   A('caption_pop','mogrt','mogrt','mogrt','0:03.0',2.1),
+   A('title_card_slab','mogrt','mogrt','mogrt','0:04.0',2.8)
+ ]},
+ {id:'trilhas',n:'Trilhas',dest:'02 MUSICA',label:9,subs:[],assets:[
+   A('drive_synth_120','wav','audio',null,'2:14.0',24),
+   A('ambient_pad_low','wav','audio',null,'3:02.0',32),
+   A('lofi_beat_88','wav','audio',null,'1:48.0',19)
+ ]}
+];
 
-function playSfxSim(name) {
-  // Síntese de som simples via Web Audio API para simulação real de áudio
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    const ctx = new AudioCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(440, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.3);
-    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.3);
-  } catch(e) {}
-}
+var S={cat:CATS[0],pick:null,playing:true,size:126,t:0};
 
-function triggerDragSim() {
-  const btn = document.getElementById('btnDragSim');
-  btn.textContent = '✨ Pack Injetado na Timeline!';
-  btn.style.background = '#4ade80';
-  setTimeout(() => {
-    btn.textContent = 'Arrastar Pack para Timeline →';
-    btn.style.background = '';
-  }, 2000);
+/* waveform estavel por nome */
+function waveOf(name,bins){
+  var p=rng(name.split('').reduce(function(a,c){return a+c.charCodeAt(0)},7));
+  var w=[],env;
+  for(var i=0;i<bins;i++){
+    env=Math.pow(Math.sin(Math.PI*i/bins),.55);
+    w.push(Math.max(.06,env*(.32+p()*.68)));
+  }
+  return w;
 }
-
-function switchTab(tabId, el) {
-  document.querySelectorAll('.inst-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.inst-tab-body').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('tab-' + tabId).classList.add('active');
-}
-
-function copyText(id) {
-  const el = document.getElementById(id);
-  if (el) {
-    navigator.clipboard.writeText(el.textContent.trim());
-    event.target.textContent = 'Copiado!';
-    setTimeout(() => event.target.textContent = 'Copiar', 1800);
+function paintAudio(c,w,h,name,progress){
+  c.fillStyle='#100D14';c.fillRect(0,0,w,h);
+  var bins=Math.max(24,Math.floor(w/3)),wf=waveOf(name,bins);
+  var bw=w/bins;
+  for(var i=0;i<bins;i++){
+    var a=wf[i]*h*.42;
+    var on=progress!=null&&(i/bins)<=progress;
+    c.fillStyle=on?'#D9A441':'rgba(240,233,220,.3)';
+    c.fillRect(i*bw,h/2-a,Math.max(1,bw*.62),a*2);
+  }
+  if(progress!=null){
+    c.fillStyle='#E0553C';c.fillRect(progress*w,0,1.2,h);
   }
 }
+function paintAsset(c,w,h,a,t,prog){
+  if(a.kind==='audio'){paintAudio(c,w,h,a.n,prog);return}
+  var seed=a.n.length*0.37;
+  (PAINT[a.paint]||PAINT.leak)(c,w,h,t,seed);
+}
 
-window.addEventListener('scroll', () => {
-  document.getElementById('header').classList.toggle('scrolled', window.scrollY > 40);
-}, { passive: true });
+/* ═══════════════ CATEGORIAS ═══════════════ */
+var catsBox=$('#cats');
+function buildCats(){
+  catsBox.innerHTML='';
+  CATS.forEach(function(cat){
+    var el=document.createElement('div');
+    el.className='cat';el.setAttribute('aria-pressed',cat===S.cat);
+    el.innerHTML='<svg class="cat-ico" width="13" height="13" viewBox="0 0 13 13" fill="none">'+
+      '<path d="M.6 2.4h3.6l1.2 1.5h7V11H.6V2.4z" stroke="currentColor" stroke-width="1"/></svg>'+
+      '<span class="cat-n">'+cat.n+'</span>'+
+      (cat.label!==null?'<i class="cat-dot" style="background:'+LABELS[cat.label][1]+'"></i>':'')+
+      '<span class="cat-c">'+cat.assets.length+'</span>';
+    el.onclick=function(){S.cat=cat;S.pick=null;buildCats();buildGrid();clearInsp()};
+    el.oncontextmenu=function(e){e.preventDefault();openCtx(e,cat)};
+    catsBox.appendChild(el);
+    cat.subs.forEach(function(sub){
+      var s2=document.createElement('div');
+      s2.className='cat sub';
+      s2.innerHTML='<svg class="cat-ico" width="13" height="13" viewBox="0 0 13 13" fill="none">'+
+        '<path d="M.6 2.4h3.6l1.2 1.5h7V11H.6V2.4z" stroke="currentColor" stroke-width="1"/></svg>'+
+        '<span class="cat-n">'+sub.n+'</span>'+
+        (cat.label!==null?'<i class="cat-dot" style="background:'+LABELS[cat.label][1]+';opacity:.5"></i>':'')+
+        '<span class="cat-c">herda</span>';
+      s2.oncontextmenu=function(e){e.preventDefault();openCtx(e,cat)};
+      catsBox.appendChild(s2);
+    });
+  });
+}
+
+/* ═══════════════ GRADE ═══════════════ */
+var grid=$('#grid'),tiles=[];
+function buildGrid(){
+  grid.innerHTML='';tiles=[];
+  grid.style.gridTemplateColumns='repeat(auto-fill,minmax('+S.size+'px,1fr))';
+  $('#catName').textContent=S.cat.n;
+  $('#catCount').textContent=S.cat.assets.length+' itens';
+  S.cat.assets.forEach(function(a){
+    var el=document.createElement('div');
+    el.className='tile';el.tabIndex=0;
+    var cv=document.createElement('canvas');cv.width=224;cv.height=140;
+    el.appendChild(cv);
+    if(S.cat.label!==null){
+      var lb=document.createElement('i');lb.className='tile-lbl';
+      lb.style.borderTopColor=LABELS[S.cat.label][1];el.appendChild(lb);
+    }
+    var x=document.createElement('span');x.className='tile-x';x.textContent=a.ext;el.appendChild(x);
+    var n=document.createElement('span');n.className='tile-n';n.textContent=a.n+'.'+a.ext;el.appendChild(n);
+    var rec={el:el,cv:cv,ctx:cv.getContext('2d'),a:a,hover:false,prog:null};
+    el.onmouseenter=function(){rec.hover=true};
+    el.onmouseleave=function(){rec.hover=false;rec.prog=null};
+    el.onclick=function(){select(rec)};
+    el.ondblclick=function(){select(rec);insert(a)};
+    el.onkeydown=function(e){if(e.key==='Enter'){select(rec);insert(a)}};
+    tiles.push(rec);grid.appendChild(el);
+  });
+  if(S.pick)markPick();
+}
+function markPick(){
+  tiles.forEach(function(t){t.el.classList.toggle('picked',S.pick&&t.a===S.pick.a)});
+}
+
+/* ═══════════════ INSPETOR ═══════════════ */
+var inspCv=$('#inspCv'),inspCtx=inspCv.getContext('2d');
+var KIND={audio:'Áudio',video:'Vídeo',lut:'LUT',mogrt:'MOGRT'};
+function select(rec){
+  S.pick=rec;markPick();
+  var a=rec.a;
+  $('#inspKind').textContent=KIND[a.kind]||'Arquivo';
+  $('#inspName').textContent=a.n+'.'+a.ext;
+  $('#inspExt').textContent='.'+a.ext;
+  $('#inspDur').textContent=a.dur;
+  $('#inspSize').textContent=a.mb<1?(a.mb*1024).toFixed(0)+' KB':a.mb.toFixed(1)+' MB';
+  $('#inspDest').textContent=S.cat.dest?'<projeto>/'+S.cat.dest+'/':'raiz do projeto';
+  $('#inspLabel').textContent=S.cat.label!==null?LABELS[S.cat.label][0]:'nenhum';
+}
+function clearInsp(){
+  $('#inspKind').textContent='—';$('#inspName').textContent='Escolha um asset';
+  ['#inspExt','#inspDur','#inspSize','#inspDest','#inspLabel'].forEach(function(k){$(k).textContent='—'});
+  inspCtx.fillStyle='#000';inspCtx.fillRect(0,0,inspCv.width,inspCv.height);
+}
+
+/* ═══════════════ MINI TIMELINE ═══════════════ */
+var MT=[
+ {n:'V1',type:'v',clips:[{x:0,w:46,t:'ABERTURA'},{x:50,w:40,t:'CENA_02'}]},
+ {n:'A1',type:'a',clips:[{x:0,w:90,t:'VO_MASTER'}]}
+];
+var MPH=58;
+function buildMT(){
+  var box=$('#miniTl');box.innerHTML='';
+  MT.forEach(function(tr,i){
+    var row=document.createElement('div');row.className='mtl-row';
+    row.innerHTML='<div class="mtl-h">'+tr.n+'</div><div class="mtl-b"></div>';
+    var b=row.querySelector('.mtl-b');
+    tr.clips.forEach(function(c){
+      var el=document.createElement('div');
+      el.className='mclip '+tr.type+(c.isNew?' new':'');
+      el.style.left=c.x+'%';el.style.width=c.w+'%';el.textContent=c.t;
+      b.appendChild(el);
+    });
+    if(i===0){
+      var ph=document.createElement('div');ph.className='mph';
+      ph.style.left='calc(34px + (100% - 34px) * '+(MPH/100)+')';row.appendChild(ph);
+    }
+    box.appendChild(row);
+  });
+}
+buildMT();
+
+function insert(a){
+  var isAudio=a.kind==='audio';
+  var w=18;
+  MT.forEach(function(t){t.clips.forEach(function(c){c.isNew=false})});
+  var type=isAudio?'a':'v';
+  /* sempre acima do que ja existe: procura de cima para baixo a primeira livre */
+  var target=null;
+  for(var i=0;i<MT.length;i++){
+    if(MT[i].type!==type)continue;
+    var busy=MT[i].clips.some(function(c){return !(MPH+w<=c.x||MPH>=c.x+c.w)});
+    if(!busy){target=MT[i];break}
+  }
+  var created=false;
+  if(!target){
+    /* cria faixa nova acima da primeira do mesmo tipo */
+    var idx=0;for(var k=0;k<MT.length;k++){if(MT[k].type===type){idx=k;break}}
+    var num=MT.filter(function(t){return t.type===type}).length+1;
+    target={n:(type==='v'?'V':'A')+num,type:type,clips:[]};
+    MT.splice(idx,0,target);created=true;
+  }
+  target.clips.push({x:MPH,w:w,t:a.n.toUpperCase().slice(0,14),isNew:true});
+  buildMT();
+  $('#tlMsg').innerHTML='<b>'+a.n+'.'+a.ext+'</b> em '+target.n+
+    (created?' &middot; faixa criada':'')+'<br>Copiado para &lt;projeto&gt;/'+S.cat.dest+'/';
+}
+
+/* ═══════════════ PRATELEIRA DO HERO ═══════════════ */
+var shelf=[];
+(function(){
+  var box=$('#shelfGrid');
+  var picks=[CATS[1].assets[0],CATS[1].assets[1],CATS[2].assets[0],CATS[1].assets[2],
+             CATS[3].assets[0],CATS[4].assets[0],CATS[0].assets[3],CATS[2].assets[3]];
+  picks.forEach(function(a){
+    var cell=document.createElement('div');cell.className='shelf-cell';
+    var cv=document.createElement('canvas');cv.width=180;cv.height=112;
+    cell.appendChild(cv);box.appendChild(cell);
+    shelf.push({ctx:cv.getContext('2d'),a:a,w:180,h:112});
+  });
+  var names=['VFX','Overlays','LUTs','MOGRT','SFX'],i=0;
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    setInterval(function(){i=(i+1)%names.length;$('#shelfCat').textContent=names[i]},2600);
+  }
+})();
+
+/* ═══════════════ LOOP DE ANIMAÇÃO ═══════════════ */
+var last=0;
+function loop(ts){
+  requestAnimationFrame(loop);
+  if(ts-last<52)return;   /* ~19 fps, suficiente e barato */
+  last=ts;
+  S.t+=0.052;
+
+  shelf.forEach(function(s){
+    if(!S.playing&&s.a.kind!=='audio')return;
+    paintAsset(s.ctx,s.w,s.h,s.a,S.t,s.a.kind==='audio'?(S.t*.22)%1:null);
+  });
+
+  tiles.forEach(function(t){
+    var run=S.playing||t.hover;
+    if(t.a.kind==='audio'){
+      if(t.hover){t.prog=((t.prog||0)+0.018)%1}
+      paintAudio(t.ctx,224,140,t.a.n,t.hover?t.prog:null);
+      return;
+    }
+    if(!run)return;
+    paintAsset(t.ctx,224,140,t.a,S.t,null);
+  });
+
+  if(S.pick){
+    var a=S.pick.a;
+    paintAsset(inspCtx,inspCv.width,inspCv.height,a,S.t,a.kind==='audio'?(S.t*.2)%1:null);
+  }
+}
+requestAnimationFrame(loop);
+
+/* ═══════════════ CONTROLES DO RODAPÉ ═══════════════ */
+$('#sizeRange').oninput=function(){S.size=+this.value;grid.style.gridTemplateColumns='repeat(auto-fill,minmax('+S.size+'px,1fr))'};
+$('#btnPlay').onclick=function(){
+  S.playing=!S.playing;
+  this.setAttribute('aria-pressed',S.playing);
+  this.title=S.playing?'Pausar previews':'Retomar previews';
+  this.innerHTML=S.playing
+    ?'<svg width="9" height="9" viewBox="0 0 9 9" fill="currentColor"><rect x="1" y="1" width="2.6" height="7"/><rect x="5.4" y="1" width="2.6" height="7"/></svg>'
+    :'<svg width="9" height="9" viewBox="0 0 9 9" fill="currentColor"><path d="M1.5 1l6.5 3.5L1.5 8z"/></svg>';
+};
+
+/* ═══════════════ MENU DE CONTEXTO ═══════════════ */
+var ctx=$('#ctx'),ctxCat=null;
+(function(){
+  var box=$('#swat');
+  LABELS.forEach(function(L,i){
+    var b=document.createElement('button');
+    b.type='button';b.style.background=L[1];b.title=L[0];
+    b.onclick=function(){
+      if(ctxCat){ctxCat.label=i;buildCats();if(S.cat===ctxCat){buildGrid();if(S.pick)select(S.pick)}}
+      closeCtx();
+    };
+    box.appendChild(b);
+  });
+})();
+function openCtx(e,cat){
+  ctxCat=cat;ctx.classList.add('on');
+  var w=ctx.offsetWidth||212,h=ctx.offsetHeight||190;
+  ctx.style.left=Math.min(e.clientX,innerWidth-w-10)+'px';
+  ctx.style.top=Math.min(e.clientY,innerHeight-h-10)+'px';
+}
+function closeCtx(){ctx.classList.remove('on');ctxCat=null}
+document.addEventListener('click',function(e){if(!ctx.contains(e.target))closeCtx()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeCtx()});
+$('#ctxDest').onclick=function(){
+  if(!ctxCat)return;
+  var v=prompt('Pasta de destino para "'+ctxCat.n+'" (caminho relativo ao projeto):',ctxCat.dest||'');
+  if(v!==null){ctxCat.dest=v.trim();if(S.pick&&S.cat===ctxCat)select(S.pick)}
+  closeCtx();
+};
+$('#ctxClear').onclick=function(){
+  if(ctxCat){ctxCat.dest='';ctxCat.label=null;buildCats();if(S.cat===ctxCat){buildGrid();if(S.pick)select(S.pick)}}
+  closeCtx();
+};
+
+/* ═══════════════ ABAS / COPIAR / REVELAÇÃO ═══════════════ */
+[].forEach.call(document.querySelectorAll('.tab'),function(t){
+  t.onclick=function(){
+    [].forEach.call(document.querySelectorAll('.tab'),function(x){x.setAttribute('aria-selected','false')});
+    [].forEach.call(document.querySelectorAll('.panel'),function(x){x.hidden=true});
+    t.setAttribute('aria-selected','true');$('#'+t.dataset.p).hidden=false;
+  };
+});
+[].forEach.call(document.querySelectorAll('.copy'),function(b){
+  b.onclick=function(){
+    navigator.clipboard.writeText(b.dataset.c).then(function(){
+      b.textContent='Copiado';b.classList.add('done');
+      setTimeout(function(){b.textContent='Copiar';b.classList.remove('done')},1500);
+    });
+  };
+});
+var io=new IntersectionObserver(function(es){
+  es.forEach(function(e){
+    if(e.isIntersecting){
+      var sib=[].slice.call(e.target.parentNode.children).filter(function(x){return x.classList.contains('rv')});
+      e.target.style.transitionDelay=(Math.min(sib.indexOf(e.target),5)*75)+'ms';
+      e.target.classList.add('in');io.unobserve(e.target);
+    }
+  });
+},{threshold:.1,rootMargin:'0px 0px -8% 0px'});
+[].forEach.call(document.querySelectorAll('.rv'),function(el){io.observe(el)});
+
+/* arranque */
+buildCats();buildGrid();clearInsp();
+})();
 </script>
-
 </body>
 </html>

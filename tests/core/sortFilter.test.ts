@@ -120,7 +120,7 @@ describe('applyView — ordenação', () => {
   });
 
   it('nomes iguais em pastas diferentes mantêm ordem estável', () => {
-    const assets = pack(['B/x.mp4', 'A/x.mp4']);
+    const assets = pack(['B/x.mp4', 'A/x.mp4'], [100, 200]);
     const first = names(applyView(assets, view({})));
     const second = names(applyView(assets, view({})));
     expect(first).toEqual(second);

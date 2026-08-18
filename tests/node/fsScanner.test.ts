@@ -194,4 +194,19 @@ describe('scanFolder — limites de segurança', () => {
     expect(seen.length).toBeGreaterThan(1);
     expect(seen.at(-1)).toBe(900);
   });
+
+  it('não entra em loops de diretórios e deduplica caminhos', async () => {
+    installFakeFs({
+      '/p': [
+        { name: 'a.mp4', kind: 'file', size: 10, mtimeMs: 1 },
+        { name: 'sub', kind: 'dir' },
+      ],
+      '/p/sub': [
+        { name: 'b.mp4', kind: 'file', size: 20, mtimeMs: 2 },
+      ],
+    });
+    const r = await scanFolder('/p');
+    expect(r.files).toHaveLength(2);
+    expect(rel(r)).toEqual(['a.mp4', 'sub/b.mp4']);
+  });
 });

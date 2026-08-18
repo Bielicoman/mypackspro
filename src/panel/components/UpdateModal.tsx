@@ -74,7 +74,7 @@ export function UpdateModal({ info, onClose }: Props) {
                     setDownloading(false);
                     // Open the downloaded ZXP or location
                     const cp = w.require('child_process');
-                    const startCmd = process.platform === 'darwin' ? 'open' : 'start';
+                    const startCmd = /mac|darwin/i.test(navigator.platform) ? 'open' : 'start';
                     cp.exec(`${startCmd} "" "${destFile}"`);
                     onClose();
                   }, 1000);

@@ -327,7 +327,14 @@ export function App() {
     if (q !== '') list = list.filter((a) => a.name.toLowerCase().includes(q));
     if (onlyFavorites) list = list.filter((a) => favSet.has(a.id));
 
-    return applyView(list, viewOpts);
+    const applied = applyView(list, viewOpts);
+
+    const seen = new Set<string>();
+    return applied.filter((a) => {
+      if (seen.has(a.id)) return false;
+      seen.add(a.id);
+      return true;
+    });
   }, [pack, selection, query, onlyFavorites, favSet, viewOpts]);
 
   /* Contagens do menu: sobre a categoria escolhida, antes do filtro de tipo,
@@ -789,7 +796,15 @@ function Footer({
       <button className="footer__gear" title="Configurações" onClick={onSettings}>
         <IconGear />
       </button>
-      <span className="footer__credit">by Alex Ascencio</span>
+      <span className="footer__credit">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <rect x="1" y="4" width="18" height="14" stroke="currentColor" strokeWidth="1.3" />
+          <path d="M1 8h18" stroke="currentColor" strokeWidth="1.3" />
+          <path d="M1 4l3-2h5l1.6 2" stroke="#d9a441" strokeWidth="1.3" fill="none" />
+          <rect x="5" y="11" width="4" height="4" fill="#d9a441" />
+        </svg>
+        MY PACKS PRO · ALEX ASCENCIO · v{CURRENT_VERSION}
+      </span>
     </div>
   );
 }

@@ -94,6 +94,8 @@ export function buildPack(input: BuildPackInput): Pack {
   const packId = fnv1a(rootPath.toLowerCase());
   const roots = new Map<string, Node>();
   const assets: Asset[] = [];
+  const seenPaths = new Set<string>();
+  const seenSignatures = new Set<string>();
   let looseCount = 0;
 
   for (const f of files) {
@@ -103,6 +105,22 @@ export function buildPack(input: BuildPackInput): Pack {
 
     const format = classify(fileName);
     if (!format.importable && input.includeUnusable !== true) continue;
+
+    const absPath = joinPath(rootPath, f.relPath);
+    const normAbs = absPath.toLowerCase().replace(/[\\/]+/g, '/');
+    if (seenPaths.has(normAbs)) continue;
+
+    const lowerName = fileName.toLowerCase();
+    const sig =
+      f.sizeBytes > 0
+        ? `${lowerName}::${f.sizeBytes}`
+        : f.mtimeMs > 0
+          ? `${lowerName}::0::${f.mtimeMs}`
+          : `${lowerName}::${normAbs}`;
+
+    if (seenSignatures.has(sig)) continue;
+    seenPaths.add(normAbs);
+    seenSignatures.add(sig);
 
     // registra a categoria (e ancestrais) a que o arquivo pertence
     if (segments.length > 0) {
@@ -125,7 +143,6 @@ export function buildPack(input: BuildPackInput): Pack {
       looseCount++;
     }
 
-    const absPath = joinPath(rootPath, f.relPath);
     assets.push({
       id: fnv1a(absPath.toLowerCase()),
       packId,

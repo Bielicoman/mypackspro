@@ -129,8 +129,22 @@ describe('buildPack — assets', () => {
     const a = pack([f('Memes/a.mp4')]);
     const b = pack([f('Memes/a.mp4')]);
     expect(a.assets[0]!.id).toBe(b.assets[0]!.id);
-    const two = pack([f('Memes/a.mp4'), f('SFX/a.mp4')]);
+    const two = pack([f('Memes/a.mp4', 1000), f('SFX/b.mp4', 2000)]);
     expect(two.assets[0]!.id).not.toBe(two.assets[1]!.id);
+  });
+
+  it('nunca duplica arquivos idênticos presentes em pastas diferentes', () => {
+    const p = pack([
+      f('11 - Memes/CJNYCB.avif', 50000),
+      f('10 - Elementos/aleatorio/CJNYCB.avif', 50000),
+      f('06 - Texturas/3.jpg', 120000),
+      f('11 - Memes/3.jpg', 40000),
+      f('10 - Elementos/aleatorio/3.jpg', 40000),
+    ]);
+    // CJNYCB duplicado é ignorado (fica 1).
+    // 3.jpg tem 1 textura (120k) e 1 meme (40k) — a cópia duplicada de 40k é ignorada (ficam 2 de 3.jpg).
+    expect(p.assets).toHaveLength(3);
+    expect(p.assets.map((a) => a.name)).toEqual(['3.jpg', '3.jpg', 'CJNYCB.avif']);
   });
 
   it('nome do pack vem da última pasta da raiz', () => {

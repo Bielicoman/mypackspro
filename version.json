@@ -2,15 +2,21 @@
   "pluginId": "com.alexascencio.mypackspro",
   "name": "My Packs Pro",
   "version": "0.2.0",
+  "channel": "beta",
+  "author": "Alex Ascencio",
   "type": "CEP",
   "host": "PPRO",
-  "hostVersionMin": "18.0",
-  "author": "Alex Ascencio",
+  "hostVersionMin": "24.0",
+  "hostVersionMax": "100.0",
+  "platform": [
+    "Windows"
+  ],
   "releaseDate": "2026-08-18",
   "downloadUrl": "https://github.com/Bielicoman/mypackspro/releases/latest/download/MyPacksPro.zxp",
   "zipUrl": "https://github.com/Bielicoman/mypackspro/archive/refs/heads/main.zip",
+  "mandatory": false,
   "changelog": {
-    "0.2.0": "Novo design do site — tema dourado editorial + atualização automática de packs",
-    "0.1.0": "Lançamento inicial — suporte a LUTs, presets e templates"
+    "0.2.0": "Novo site com navegador de acervo interativo",
+    "0.1.0": "Lançamento inicial com grade de assets e preview"
   }
 }

@@ -2,14 +2,21 @@
   "pluginId": "com.alexascencio.mypackspro",
   "name": "My Packs Pro",
   "version": "0.2.0",
-  "minPremiereVersion": "2024",
+  "channel": "beta",
+  "author": "Alex Ascencio",
+  "type": "CEP",
+  "host": "PPRO",
+  "hostVersionMin": "24.0",
+  "hostVersionMax": "100.0",
+  "platform": [
+    "Windows"
+  ],
   "releaseDate": "2026-08-18",
   "downloadUrl": "https://github.com/Bielicoman/mypackspro/releases/latest/download/MyPacksPro.zxp",
   "zipUrl": "https://github.com/Bielicoman/mypackspro/archive/refs/heads/main.zip",
   "mandatory": false,
-  "changelog": [
-    "Sistema de atualização automática no painel",
-    "Atualização de downloads ZXP e ZIP no site"
-  ],
-  "fullName": "My Packs Pro 0.2.0"
+  "changelog": {
+    "0.2.0": "Novo site com navegador de acervo interativo",
+    "0.1.0": "Lançamento inicial com grade de assets e preview"
+  }
 }
