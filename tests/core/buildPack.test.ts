@@ -103,7 +103,7 @@ describe('buildPack — assets', () => {
 
   it('esconde o que o Premiere não importa', () => {
     const p = pack([f('a.mkv'), f('b.ffx'), f('c.pdf'), f('d.ttf'), f('e.cube')]);
-    expect(p.assets.map((a) => a.name)).toEqual(['a.mkv']);
+    expect(p.assets.map((a) => a.name)).toEqual(['a.mkv', 'e.cube']);
   });
 
   it('inclui os inutilizáveis quando explicitamente pedido', () => {

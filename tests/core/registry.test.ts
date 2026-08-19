@@ -79,14 +79,14 @@ describe('classificação por tier', () => {
 });
 
 describe('importabilidade — controla se o arrasto é permitido', () => {
-  it('mídia e projetos Adobe que o Premiere aceita', () => {
-    for (const f of ['a.mp4', 'a.wav', 'a.png', 'a.psd', 'a.ai', 'a.mogrt', 'a.aep', 'a.prproj']) {
+  it('mídia, projetos Adobe e LUTs que o Premiere aceita', () => {
+    for (const f of ['a.mp4', 'a.wav', 'a.png', 'a.psd', 'a.ai', 'a.mogrt', 'a.aep', 'a.prproj', 'a.cube']) {
       expect(isImportable(f), f).toBe(true);
     }
   });
 
-  it('presets, fontes, LUTs e SVG não são importáveis', () => {
-    for (const f of ['a.ffx', 'a.abr', 'a.atn', 'a.ttf', 'a.cube', 'a.svg']) {
+  it('presets, fontes e SVG não são importáveis', () => {
+    for (const f of ['a.ffx', 'a.abr', 'a.atn', 'a.ttf', 'a.svg']) {
       expect(isImportable(f), f).toBe(false);
     }
   });

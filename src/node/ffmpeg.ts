@@ -282,21 +282,55 @@ export async function makeAnimatedProxy(
 }
 
 /**
- * Pré-visualização de LUT: aplica a tabela a uma imagem de referência gerada
- * na hora (gradiente + barras), para se ver o efeito da LUT sem depender de
- * nenhum asset embarcado.
+ * Pré-visualização de LUT: aplica a tabela 3D (.cube) à imagem de referência
+ * cinematográfica com tons de pele, sombras e destaques, permitindo visualizar
+ * o efeito real da cor.
  */
 export async function makeLutPreview(tools: FfmpegTools, src: string, out: string): Promise<void> {
+  const p = path();
   // Escapa o caminho para o parser de filtros: ':' e '\' têm significado próprio.
   const escaped = src.replace(/\\/g, '/').replace(/:/g, '\\:');
+
+  // Procura a imagem de referência nas pastas do plugin
+  const pluginDir = p.dirname(p.dirname(tools.ffmpeg));
+  const candidateRefPaths = [
+    p.join(pluginDir, 'bin', 'lut-reference.jpg'),
+    p.join(pluginDir, 'dist', 'lut-reference.jpg'),
+    p.join(pluginDir, 'src', 'panel', 'assets', 'lut-reference.jpg'),
+    p.join(p.dirname(tools.ffmpeg), '..', 'lut-reference.jpg'),
+    p.join(p.dirname(tools.ffmpeg), 'lut-reference.jpg'),
+  ];
+
+  let refImg: string | null = null;
+  for (const c of candidateRefPaths) {
+    if (existsSync(c)) {
+      refImg = c;
+      break;
+    }
+  }
+
+  const inputArgs =
+    refImg !== null
+      ? ['-i', refImg]
+      : ['-f', 'lavfi', '-i', 'smptebars=size=426x240,format=rgb24'];
+
+  const vf =
+    refImg !== null
+      ? `scale=-2:${PROXY_HEIGHT}:flags=lanczos,lut3d=file='${escaped}'`
+      : `lut3d=file='${escaped}'`;
+
   await mustSucceed(
     tools.ffmpeg,
     [
-      '-y', '-hide_banner', '-v', 'error',
-      '-f', 'lavfi',
-      '-i', `smptebars=size=426x240,format=rgb24`,
-      '-vf', `lut3d=file='${escaped}'`,
-      '-frames:v', '1',
+      '-y',
+      '-hide_banner',
+      '-v',
+      'error',
+      ...inputArgs,
+      '-vf',
+      vf,
+      '-frames:v',
+      '1',
       out,
     ],
     'Pré-visualização de LUT',

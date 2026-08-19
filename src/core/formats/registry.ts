@@ -121,7 +121,7 @@ const GROUPS: readonly Group[] = [
     family: 'lut',
     tier: 2,
     strategy: 'lut3d',
-    importable: false, // LUT aplica-se como efeito, não se importa como mídia
+    importable: true,
     icon: 'lut',
     ext: ['cube', '3dl', 'look', 'csp', 'm3d', 'cdl'],
   },

@@ -231,11 +231,17 @@ export function App() {
 
   const handleInsert = useCallback(
     async (asset: Asset) => {
+      const isLut = asset.format.family === 'lut';
       const kind = asset.format.family === 'audio' ? 'audio' : 'video';
       try {
         const target = await prepareForImport(asset);
-        await insertAtPlayhead([target], kind);
-        say(`${asset.name} → playhead`);
+        if (isLut) {
+          await importToProject([target]);
+          say(`${asset.name} → Projeto`);
+        } else {
+          await insertAtPlayhead([target], kind);
+          say(`${asset.name} → playhead`);
+        }
       } catch (e) {
         say((e as Error).message, 4000);
       }

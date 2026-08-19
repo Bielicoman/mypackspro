@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExtensionManifest
+	Version="7.0"
+	ExtensionBundleId="com.alexascencio.mypackspro"
+	ExtensionBundleVersion="0.2.0"
+	ExtensionBundleName="My Packs Pro"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+	<ExtensionList>
+		<Extension Id="com.alexascencio.mypackspro.panel" Version="0.2.0" />
+	</ExtensionList>
+	<ExecutionEnvironment>
+		<HostList>
+			<Host Name="PPRO" Version="[14.0,99.9]" />
+		</HostList>
+		<LocaleList>
+			<Locale Code="All" />
+		</LocaleList>
+		<RequiredRuntimeList>
+			<RequiredRuntime Name="CSXS" Version="9.0" />
+		</RequiredRuntimeList>
+	</ExecutionEnvironment>
+	<DispatchInfoList>
+		<Extension Id="com.alexascencio.mypackspro.panel">
+			<DispatchInfo>
+				<Resources>
+					<MainPath>./dist/index.html</MainPath>
+					<ScriptPath>./jsx/ascencio.jsx</ScriptPath>
+					<CEFCommandLine>
+						<Parameter>--enable-nodejs</Parameter>
+						<Parameter>--mixed-context</Parameter>
+						<Parameter>--allow-file-access</Parameter>
+						<Parameter>--allow-file-access-from-files</Parameter>
+					</CEFCommandLine>
+				</Resources>
+				<Lifecycle>
+					<AutoVisible>true</AutoVisible>
+				</Lifecycle>
+				<UI>
+					<Type>Panel</Type>
+					<Menu>My Packs Pro</Menu>
+					<Geometry>
+						<Size><Height>560</Height><Width>620</Width></Size>
+						<MinSize><Height>160</Height><Width>240</Width></MinSize>
+					</Geometry>
+					<Icons>
+						<Icon Type="Normal">./icons/panel.png</Icon>
+						<Icon Type="RollOver">./icons/panel.png</Icon>
+						<Icon Type="Disabled">./icons/panel-disabled.png</Icon>
+						<Icon Type="DarkNormal">./icons/panel.png</Icon>
+						<Icon Type="DarkRollOver">./icons/panel.png</Icon>
+					</Icons>
+				</UI>
+			</DispatchInfo>
+		</Extension>
+	</DispatchInfoList>
+</ExtensionManifest>
