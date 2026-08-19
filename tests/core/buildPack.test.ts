@@ -67,12 +67,15 @@ describe('buildPack — arquivos soltos na raiz', () => {
 });
 
 describe('buildPack — lixo de sistema', () => {
-  it('descarta Thumbs.db, desktop.ini, .DS_Store e dotfiles', () => {
+  it('descarta Thumbs.db, desktop.ini, .DS_Store, dotfiles e arquivos XML', () => {
     const p = pack([
       f('Thumbs.db'),
       f('Memes/desktop.ini'),
       f('Memes/.DS_Store'),
       f('.gitignore'),
+      f('Sequencia.xml'),
+      f('FinalCut.fcpxml'),
+      f('Memes/projeto.xml'),
       f('Memes/bom.mp4'),
     ]);
     expect(p.assets.map((a) => a.name)).toEqual(['bom.mp4']);

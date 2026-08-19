@@ -18,7 +18,12 @@ const JUNK = new Set(['thumbs.db', 'desktop.ini', '.ds_store', 'ehthumbs.db', '.
 
 function isJunk(fileName: string): boolean {
   const lower = fileName.toLowerCase();
-  return JUNK.has(lower) || lower.startsWith('.');
+  return (
+    JUNK.has(lower) ||
+    lower.startsWith('.') ||
+    lower.endsWith('.xml') ||
+    lower.endsWith('.fcpxml')
+  );
 }
 
 /**

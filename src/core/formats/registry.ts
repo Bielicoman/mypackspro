@@ -168,7 +168,15 @@ const GROUPS: readonly Group[] = [
     strategy: 'icon',
     importable: true,
     icon: 'interchange',
-    ext: ['aaf', 'edl', 'xml', 'fcpxml', 'omf', 'drp'],
+    ext: ['aaf', 'edl', 'omf', 'drp'],
+  },
+  {
+    family: 'interchange',
+    tier: 3,
+    strategy: 'icon',
+    importable: false,
+    icon: 'interchange',
+    ext: ['xml', 'fcpxml'],
   },
   {
     family: 'font',
